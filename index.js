@@ -1,8 +1,13 @@
-const { Client } = require("discord.js");
+const { Client, GatewayIntentBits, Partials } = require("discord.js");
+const { loadEvents } = require("./Handlers");
+const { Guilds, GuildMembers, GuildMessages } = GatewayIntentBits;
+const { User, Message, GuildMember, ThreadMember } = Partials;
 require("dotenv").config({});
-const client = new Client({ intents: ["Guilds"] });
+const client = new Client({
+  intents: [Guilds, GuildMembers, GuildMessages],
+  partials: [User, Message, GuildMember, ThreadMember],
+});
 
 client.login(process.env.BOT_TOKEN).then(() => {
-  console.log(`Bot logged in as ${client.user.username}`);
-  client.user.setActivity(`Serving ${client.guilds.cache.size} guild(s)`);
+  loadEvents(client);
 });
