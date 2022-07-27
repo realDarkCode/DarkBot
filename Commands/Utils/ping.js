@@ -8,7 +8,7 @@ module.exports = {
    *
    * @param {CommandInteraction} interaction
    */
-  async execute(interaction) {
+  execute(interaction) {
     return interaction.reply({ content: "Pong! 🏓", ephemeral: true });
   },
 };
