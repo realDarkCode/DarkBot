@@ -13,7 +13,7 @@ const loadCommands = (client) => {
   const commandFolders = fs.readdirSync("./Commands");
   for (const folder of commandFolders) {
     const commandFiles = fs
-      .readFileSync(`./Commands/${folder}`)
+      .readdirSync(`./Commands/${folder}`)
       .filter((file) => file.endsWith(".js"));
 
     for (const file of commandFiles) {
@@ -25,7 +25,7 @@ const loadCommands = (client) => {
         developersArray.push(commandFile.data.toJSON());
       else commandsArray.push(commandFile.data.toJSON());
 
-      table.addRow(commandFile, "🟩");
+      table.addRow(commandFile.data.name, "🟩");
     }
   }
 
