@@ -13,6 +13,19 @@ const client = new Client({
   partials: [User, Message, GuildMember, ThreadMember],
 });
 
+const { connect } = require("mongoose");
+
+connect(process.env.DATABASE_URI, {
+  connectTimeoutMS: 10000,
+})
+  .then((connection) => {
+    console.log("Connected to database:", connection.connection.name);
+  })
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });
+
 client.commands = new Collection();
 client.login(process.env.BOT_TOKEN).then(() => {
   loadEvents(client);
