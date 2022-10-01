@@ -16,8 +16,23 @@ const client = new Client({
 client.events = new Collection();
 client.commands = new Collection();
 
+// Establish connection to Database
+const { connect } = require("mongoose");
+connect(process.env.DATABASE_URI, {
+  connectTimeoutMS: 10000,
+})
+  .then((connection) => {
+    console.log(`Connected to database: ${connection.connection.name}`);
+  })
+  .catch((err) => {
+    console.log(err);
+    console.log("⚠️ Failed to establish connection to database. exiting...");
+    process.exit(1);
+  });
+
 // loading the handlers
 const { loadEvents } = require("./handlers");
 loadEvents(client);
+
 // Login to the client
 client.login(process.env.DISCORD_TOKEN);
