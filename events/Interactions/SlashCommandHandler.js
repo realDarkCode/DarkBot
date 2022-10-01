@@ -23,7 +23,7 @@ module.exports = {
       interaction.user.id !== config.development.developerID
     ) {
       return interaction.reply({
-        content: "This command is developer only",
+        content: "This command is only for  developer",
         ephemeral: true,
       });
     }

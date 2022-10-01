@@ -19,10 +19,10 @@ const loadCommands = async (client) => {
       client.commands.set(command.data.name, command);
       commandArray.push(command.data.toJSON());
 
-      table.addRow(command.name, "🟩");
+      table.addRow(command.data.name, "🟩");
     } catch (error) {
       console.log(error);
-      table.addRow(command.name, "🟥");
+      table.addRow(command.data.name, "🟥");
     }
   });
 

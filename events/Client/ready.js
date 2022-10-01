@@ -1,10 +1,10 @@
-const { commandHandler } = require("../../handlers");
+const { loadCommands } = require("../../handlers");
 module.exports = {
   name: "ready",
   once: true,
   execute(client) {
     console.log(`Client logged in as ${client.user.tag}`);
     client.user.setActivity("with fire along with DarkCode");
-    commandHandler(client);
+    loadCommands(client);
   },
 };
