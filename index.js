@@ -13,9 +13,10 @@ const client = new Client({
   intents: [Guilds, GuildMembers, GuildMessages],
   partials: [User, Message, GuildMember, ThreadMember],
 });
+
 client.events = new Collection();
 client.commands = new Collection();
-
+client.subCommands = new Collection();
 // Establish connection to Database
 const { connect } = require("mongoose");
 connect(process.env.DATABASE_URI, {

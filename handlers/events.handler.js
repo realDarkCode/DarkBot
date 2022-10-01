@@ -3,7 +3,7 @@ const loadEvents = async (client) => {
 
   // Initialize the table for logging status
   const ascii = require("ascii-table");
-  const table = new ascii("Events").setHeading("Events", "Status");
+  const table = new ascii("Events").setHeading("SL", "Event", "Status");
 
   // clear previous events from cache
   await client.events.clear();
@@ -11,7 +11,7 @@ const loadEvents = async (client) => {
   const events = await loadFiles("events");
 
   // execute each event
-  events.forEach((eventFile) => {
+  events.forEach((eventFile, index) => {
     const event = require(eventFile);
     try {
       const execute = (...args) => event.execute(client, ...args);
@@ -27,10 +27,10 @@ const loadEvents = async (client) => {
         if (event.once) client.on(event.name, execute);
         else client.on(event.name, execute);
       }
-      table.addRow(event.name, "🟩");
+      table.addRow(index + 1, event.name, "🟩");
     } catch (error) {
       console.log(error);
-      table.addRow(event.name, "🟥");
+      table.addRow(index + 1, event.name, "🟥");
     }
   });
 

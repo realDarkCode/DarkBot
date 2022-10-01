@@ -28,6 +28,20 @@ module.exports = {
       });
     }
 
-    command.execute(interaction);
+    const subCommand = interaction.options.getSubcommand();
+    if (subCommand) {
+      const subCommandFile = client.subCommands.get(
+        `${interaction.commandName}.${subCommand}`
+      );
+      if (!subCommandFile) {
+        return interaction.reply({
+          content: "This sub command is outdated",
+          ephemeral: true,
+        });
+      }
+      subCommandFile.execute(interaction);
+    } else {
+      command.execute(interaction);
+    }
   },
 };
