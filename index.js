@@ -20,11 +20,4 @@ const { eventHandler } = require("./handlers");
 eventHandler(client);
 
 // Login to the client
-client
-  .login(process.env.DISCORD_TOKEN)
-  .then(() => {
-    console.log(`Client logged in as ${client.user.tag}`);
-
-    client.user.setActivity("with fire along with DarkCode");
-  })
-  .catch(console.error);
+client.login(process.env.DISCORD_TOKEN);
