@@ -14,10 +14,10 @@ const client = new Client({
   partials: [User, Message, GuildMember, ThreadMember],
 });
 client.events = new Collection();
+client.commands = new Collection();
 
+// loading the handlers
 const { eventHandler } = require("./handlers");
-
 eventHandler(client);
-
 // Login to the client
 client.login(process.env.DISCORD_TOKEN);
