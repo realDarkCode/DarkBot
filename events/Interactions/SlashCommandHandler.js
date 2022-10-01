@@ -18,7 +18,10 @@ module.exports = {
         ephemeral: true,
       });
     }
-    if (command.developerOnly && interaction.user.id !== config.developer.id) {
+    if (
+      command.developerOnly &&
+      interaction.user.id !== config.development.developerID
+    ) {
       return interaction.reply({
         content: "This command is developer only",
         ephemeral: true,
