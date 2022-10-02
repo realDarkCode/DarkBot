@@ -11,7 +11,7 @@ const { Guilds, GuildMembers, GuildMessages } = GatewayIntentBits;
 const { User, Message, GuildMember, ThreadMember } = Partials;
 const client = new Client({
   intents: [Guilds, GuildMembers, GuildMessages],
-  partials: [User, Message, GuildMember, ThreadMember],
+  partials: [Message, ThreadMember],
 });
 
 client.events = new Collection();
