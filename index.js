@@ -34,7 +34,7 @@ connect(process.env.DATABASE_URI, {
   });
 
 // loading the handlers
-const { loadEvents } = require("./handlers");
+const { loadEvents } = require("./src/handlers");
 loadEvents(client);
 
 // Login to the client
