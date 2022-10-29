@@ -1,35 +1,49 @@
-const { ChatInputCommandInteraction } = require("discord.js");
+const {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  Client,
+} = require("discord.js");
 const config = require("../../config/bot");
+const ms = require("ms");
 module.exports = {
   name: "interactionCreate",
 
   /**
    * @param {ChatInputCommandInteraction} interaction
-   * @param {void} client
+   * @param {Client} client
    * @returns {Promise<void>}
    */
-  execute(client, interaction) {
+  async execute(client, interaction) {
+    const errorEmbed = new EmbedBuilder()
+      .setColor("Red")
+      .setAuthor({
+        name: "Error Occurred while executing this command",
+      })
+      .setFooter({
+        text: interaction.user.tag,
+      })
+      .setTimestamp();
+    if (!interaction.isChatInputCommand()) return;
+
+    const command = client.commands.get(interaction.commandName);
+    if (!command) {
+      return interaction.reply({
+        content: "This command is outdated",
+        ephemeral: true,
+      });
+    }
+    if (
+      command.developerOnly &&
+      interaction.user.id !== config.development.developerID
+    ) {
+      return interaction.reply({
+        content: "This command is only for  developer",
+        ephemeral: true,
+      });
+    }
+
+    const subCommand = interaction.options.getSubcommand(false);
     try {
-      if (!interaction.isChatInputCommand()) return;
-
-      const command = client.commands.get(interaction.commandName);
-      if (!command) {
-        return interaction.reply({
-          content: "This command is outdated",
-          ephemeral: true,
-        });
-      }
-      if (
-        command.developerOnly &&
-        interaction.user.id !== config.development.developerID
-      ) {
-        return interaction.reply({
-          content: "This command is only for  developer",
-          ephemeral: true,
-        });
-      }
-
-      const subCommand = interaction.options.getSubcommand(false);
       if (subCommand) {
         const subCommandFile = client.subCommands.get(
           `${interaction.commandName}.${subCommand}`
@@ -40,14 +54,18 @@ module.exports = {
             ephemeral: true,
           });
         }
-        subCommandFile.execute(interaction);
+        await subCommandFile.execute(interaction);
       } else {
-        command.execute(interaction);
+        await command.execute(interaction);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      errorEmbed.setDescription(`
+      \`Command:\` ${interaction.commandName}.${subCommand || ""}
+      \`Error:\` ${error.message}
+      `);
       interaction.reply({
-        content: "Something went wrong while executing this command",
+        embeds: [errorEmbed],
       });
     }
   },
