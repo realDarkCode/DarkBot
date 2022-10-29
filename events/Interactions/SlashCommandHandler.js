@@ -9,39 +9,46 @@ module.exports = {
    * @returns {Promise<void>}
    */
   execute(client, interaction) {
-    if (!interaction.isChatInputCommand()) return;
+    try {
+      if (!interaction.isChatInputCommand()) return;
 
-    const command = client.commands.get(interaction.commandName);
-    if (!command) {
-      return interaction.reply({
-        content: "This command is outdated",
-        ephemeral: true,
-      });
-    }
-    if (
-      command.developerOnly &&
-      interaction.user.id !== config.development.developerID
-    ) {
-      return interaction.reply({
-        content: "This command is only for  developer",
-        ephemeral: true,
-      });
-    }
-
-    const subCommand = interaction.options.getSubcommand(false);
-    if (subCommand) {
-      const subCommandFile = client.subCommands.get(
-        `${interaction.commandName}.${subCommand}`
-      );
-      if (!subCommandFile) {
+      const command = client.commands.get(interaction.commandName);
+      if (!command) {
         return interaction.reply({
-          content: "This sub command is outdated",
+          content: "This command is outdated",
           ephemeral: true,
         });
       }
-      subCommandFile.execute(interaction);
-    } else {
-      command.execute(interaction);
+      if (
+        command.developerOnly &&
+        interaction.user.id !== config.development.developerID
+      ) {
+        return interaction.reply({
+          content: "This command is only for  developer",
+          ephemeral: true,
+        });
+      }
+
+      const subCommand = interaction.options.getSubcommand(false);
+      if (subCommand) {
+        const subCommandFile = client.subCommands.get(
+          `${interaction.commandName}.${subCommand}`
+        );
+        if (!subCommandFile) {
+          return interaction.reply({
+            content: "This sub command is outdated",
+            ephemeral: true,
+          });
+        }
+        subCommandFile.execute(interaction);
+      } else {
+        command.execute(interaction);
+      }
+    } catch (error) {
+      console.log(error);
+      interaction.reply({
+        content: "Something went wrong while executing this command",
+      });
     }
   },
 };
