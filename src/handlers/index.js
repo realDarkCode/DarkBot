@@ -1,4 +1,4 @@
 const loadEvents = require("./events.handler");
 const loadCommands = require("./command.handler");
-
-module.exports = { loadEvents, loadCommands };
+const loadComponents = require("./component.handler");
+module.exports = { loadEvents, loadCommands, loadComponents };

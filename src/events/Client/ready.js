@@ -1,4 +1,4 @@
-const { loadCommands } = require("../../handlers");
+const { loadCommands, loadComponents } = require("../../handlers");
 module.exports = {
   name: "ready",
   once: true,
@@ -6,5 +6,6 @@ module.exports = {
     console.log(`Client logged in as ${client.user.tag}`);
     client.user.setActivity("with fire along with DarkCode");
     loadCommands(client);
+    loadComponents(client);
   },
 };

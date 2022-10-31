@@ -17,6 +17,7 @@ const client = new Client({
 client.events = new Collection();
 client.commands = new Collection();
 client.subCommands = new Collection();
+client.components = new Collection();
 client.color = "#1975FC";
 
 // Establish connection to Database
@@ -36,6 +37,5 @@ connect(process.env.DATABASE_URI, {
 // loading the handlers
 const { loadEvents } = require("./src/handlers");
 loadEvents(client);
-
 // Login to the client
 client.login(process.env.DISCORD_TOKEN);
