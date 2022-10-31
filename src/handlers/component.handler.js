@@ -19,6 +19,7 @@ const loadComponents = async (client) => {
     const component = require(componentFile);
     try {
       client.components.set(component.data.name, component);
+      table.addRow(index + 1, component.data.name, "🟩");
     } catch (error) {
       console.log(error);
       table.addRow(index + 1, component.data.name, "🟥");
@@ -27,7 +28,8 @@ const loadComponents = async (client) => {
 
   // log status
   if (table.__rows.length)
-    console.log(table.toString(), `\n${components.length} Components Loaded`);
+    console.log(`${components.length} Components Loaded`);
+  else console.log("No components found");
 };
 
 module.exports = loadComponents;
