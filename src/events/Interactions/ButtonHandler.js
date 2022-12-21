@@ -14,6 +14,7 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async execute(client, interaction) {
+    if (!interaction.isButton()) return;
     const errorEmbed = new EmbedBuilder()
       .setColor("Red")
       .setAuthor({
@@ -26,12 +27,13 @@ module.exports = {
     if (!interaction.isButton()) return;
 
     const button = client.components.get(interaction.customId);
-    if (!button) {
-      return interaction.reply({
-        content: "This interaction is outdated",
-        ephemeral: true,
-      });
-    }
+    // if (!button) {
+    //   return interaction.reply({
+    //     content: "This interaction is outdated",
+    //     ephemeral: true,
+    //   });
+    // }
+    if (!button) return;
     if (
       button.developerOnly &&
       interaction.user.id !== config.development.developerID
