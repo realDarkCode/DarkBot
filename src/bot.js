@@ -40,8 +40,8 @@ const { loadEvents } = require("./handlers");
 loadEvents(client);
 
 // load guild config
-const { loadGuildMemberLogConfig } = require("./functions/loadConfig");
+const { loadGuildConfig } = require("./functions/loadConfig");
 
-loadGuildMemberLogConfig(client);
+loadGuildConfig(client);
 
 module.exports = client;

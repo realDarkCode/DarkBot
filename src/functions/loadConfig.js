@@ -1,13 +1,9 @@
-const memberLogDB = require("../schemas/memberLog.schema");
+const guildConfigDB = require("../schemas/guildConfig.schema");
 
-async function loadGuildMemberLogConfig(client) {
-  (await memberLogDB.find()).forEach((doc) => {
-    client.guildConfig.set(doc.guildId, {
-      logChannelId: doc.logChannelId,
-      memberRoleId: doc.memberRoleId,
-      botRoleId: doc.botRoleId,
-    });
+async function loadGuildConfig(client) {
+  (await guildConfigDB.find()).forEach((doc) => {
+    client.guildConfig.set(doc.guildId, doc.toObject());
   });
 }
 
-module.exports = { loadGuildMemberLogConfig };
+module.exports = { loadGuildConfig };

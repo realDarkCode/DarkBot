@@ -1,6 +1,6 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 
-const MemberLogDB = require("../../../schemas/memberLog.schema");
+const MemberLogDB = require("../../../schemas/guildConfig.schema");
 
 module.exports = {
   subCommand: "setup.member_log",
