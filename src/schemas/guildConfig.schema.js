@@ -1,24 +1,23 @@
 const { Schema, model } = require("mongoose");
 
-const stringRequired = {
-  type: String,
-  required: true,
-};
-const memberLogSchema = new Schema(
+const guildConfigSchema = new Schema(
   {
     guildId: {
-      ...stringRequired,
+      type: String,
+      required: true,
       unique: true,
     },
     guildName: String,
-    logChannelId: stringRequired,
-    logChannelName: String,
-    memberRoleId: stringRequired,
-    botRoleId: stringRequired,
+    memberLogChannelId: String,
+    memberLogChannelName: String,
+    botLogChannelId: String,
+    botLogChannelName: String,
+    memberRoleId: String,
+    botRoleId: String,
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = model("memberLog", memberLogSchema);
+module.exports = model("guildConfig", guildConfigSchema);

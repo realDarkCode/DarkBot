@@ -22,7 +22,7 @@ module.exports = {
 
     // Fetch logging channel
     const logChannel = (await guild.channels.fetch()).get(
-      guildMemberLogConfig.logChannelId
+      guildMemberLogConfig.memberLogChannelId
     );
     if (!logChannel) return;
 

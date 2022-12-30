@@ -30,5 +30,16 @@ module.exports = {
             .setName("bot_role")
             .setDescription("select bot role that will added to new bot")
         )
+    )
+    .addSubcommand((option) =>
+      option
+        .setName("bot")
+        .setDescription("Config bot settings for this guild")
+        .addChannelOption((option) =>
+          option
+            .setName("log_channel")
+            .setDescription("set  bot default logging channel")
+            .addChannelTypes(ChannelType.GuildText)
+        )
     ),
 };

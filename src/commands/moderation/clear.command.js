@@ -39,7 +39,7 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const { channel, guildId, member, options } = interaction;
+    const { channel, guildId, member, options, client, guild } = interaction;
 
     const amount = options.getNumber("amount");
     const reason = options.getString("reason");
@@ -49,7 +49,7 @@ module.exports = {
       .setColor("Yellow")
       .setTitle("Bulk message deletion");
 
-    const handleBulkDeleteSuccess = (deletedMessages) => {
+    const handleBulkDeleteSuccess = async (deletedMessages) => {
       interaction.reply({
         ephemeral: true,
         embeds: [
@@ -60,6 +60,30 @@ module.exports = {
           ),
         ],
       });
+
+      // TODO: response to bot log channel
+      const guildConfig = client.guildConfig.get(guildId);
+      if (!guildConfig?.botLogChannelId) return;
+
+      const botLogChannel = guild.channels.cache.get(
+        guildConfig.botLogChannelId
+      );
+
+      const descriptionArray = [
+        `- Moderator: <@${member.id}>`,
+        `- Channel: <#${channel.id}>`,
+        `${target ? `- Target: <@${target.id}>` : ``}`,
+        `- Message Deleted: \`${deletedMessages.size}\``,
+      ];
+
+      const logResponse = new EmbedBuilder()
+        .setTitle("Cleared bulk messages")
+        .setColor("Yellow")
+        .setDescription(descriptionArray.join("\n"))
+        .setFooter({ text: "Performed bulk message deletion" })
+        .setTimestamp();
+
+      await botLogChannel.send({ embeds: [logResponse] });
     };
 
     const handleBulkDeleteError = (error) => {
@@ -80,7 +104,7 @@ module.exports = {
       // delete message if target is specified
       let count = 0;
       const messagesToDelete = channelMessages.reduce((store, current) => {
-        if (current.member.id === target.id && count < amount) {
+        if (current.author.id === target.id && count < amount) {
           store.push(current);
           count++;
         }
@@ -92,13 +116,10 @@ module.exports = {
         .then(handleBulkDeleteSuccess)
         .catch(handleBulkDeleteError);
     } else {
-      // TODO: delete message if target is not specified
       channel
         .bulkDelete(amount, true)
         .then(handleBulkDeleteSuccess)
         .catch(handleBulkDeleteError);
     }
-
-    // TODO: response to bot log channel
   },
 };

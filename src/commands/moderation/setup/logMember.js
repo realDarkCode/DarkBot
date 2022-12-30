@@ -17,7 +17,7 @@ module.exports = {
 
     const guildConfig = {
       guildId: guild.id,
-      logChannelId: logChannel.id,
+      memberLogChannelId: logChannel.id,
       memberRoleId,
       botRoleId,
     };
@@ -28,7 +28,7 @@ module.exports = {
       {
         ...guildConfig,
         guildName: guild.name,
-        logChannelName: logChannel.name,
+        memberLogChannelName: logChannel.name,
       },
       { upsert: true, new: true }
     );
