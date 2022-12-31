@@ -54,14 +54,14 @@ module.exports = {
         ephemeral: true,
         embeds: [
           embed.setDescription(
-            `Deleted ${deletedMessages.size} messages ${
+            `Deleted ${deletedMessages.size} messages${
               target ? ` from ${target}` : ""
             }.`
           ),
         ],
       });
 
-      // TODO: response to bot log channel
+      // response to bot log channel
       const guildConfig = client.guildConfig.get(guildId);
       if (!guildConfig?.botLogChannelId) return;
 
@@ -72,9 +72,10 @@ module.exports = {
       const descriptionArray = [
         `- Moderator: <@${member.id}>`,
         `- Channel: <#${channel.id}>`,
-        `${target ? `- Target: <@${target.id}>` : ``}`,
-        `- Message Deleted: \`${deletedMessages.size}\``,
+        `- Reason: \`${reason}\``,
       ];
+      if (target) descriptionArray.push(`- Target: <@${target.id}>`);
+      descriptionArray.push(`- Message Deleted: \`${deletedMessages.size}\``);
 
       const logResponse = new EmbedBuilder()
         .setTitle("Cleared bulk messages")
