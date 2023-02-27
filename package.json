@@ -8,10 +8,14 @@
     "dev": "nodemon index.js"
   },
   "dependencies": {
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/voice": "^0.14.0",
     "ascii-table": "^0.0.9",
     "discord.js": "^14.7.1",
+    "distube": "^4.0.4",
     "dotenv": "^16.0.1",
     "glob": "^8.0.3",
+    "libsodium-wrappers": "^0.7.11",
     "moment": "^2.29.4",
     "mongoose": "^6.6.3",
     "ms": "^2.1.3"
