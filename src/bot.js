@@ -7,10 +7,11 @@ const {
 } = require("discord.js");
 
 // Initialize the client
-const { Guilds, GuildMembers, GuildMessages } = GatewayIntentBits;
+const { Guilds, GuildMembers, GuildMessages, GuildVoiceStates } =
+  GatewayIntentBits;
 const { User, Message, GuildMember, ThreadMember } = Partials;
 const client = new Client({
-  intents: [Guilds, GuildMembers, GuildMessages],
+  intents: [Guilds, GuildMembers, GuildMessages, GuildVoiceStates],
   partials: [Message, ThreadMember],
 });
 
@@ -21,8 +22,16 @@ client.components = new Collection();
 client.guildConfig = new Collection();
 client.color = "#1975FC";
 
+const { DisTube } = require("distube");
+const { SpotifyPlugin } = require("@distube/spotify");
+const { YtDlpPlugin } = require("@distube/yt-dlp");
+client.distube = new DisTube(client, {
+  emptyCooldown: 5 * 60,
+  plugins: [new SpotifyPlugin(), new YtDlpPlugin()],
+});
 // Establish connection to Database
-const { connect } = require("mongoose");
+const { connect, set: mongooseSet } = require("mongoose");
+mongooseSet("strictQuery", false);
 connect(process.env.DATABASE_URI, {
   connectTimeoutMS: 10000,
 })
