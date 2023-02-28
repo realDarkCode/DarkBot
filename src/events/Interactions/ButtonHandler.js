@@ -26,13 +26,18 @@ module.exports = {
       .setTimestamp();
     if (!interaction.isButton()) return;
 
-    const button = client.components.get(interaction.customId);
-    // if (!button) {
-    //   return interaction.reply({
-    //     content: "This interaction is outdated",
-    //     ephemeral: true,
-    //   });
-    // }
+    console.log(interaction.customId, interaction.customId.split("-"));
+    console.log(client.components);
+
+    const buttonInfo = interaction.customId.split("-");
+    const button = client.components.get(buttonInfo[0]);
+
+    if (!button) {
+      return interaction.reply({
+        content: "This interaction is outdated",
+        ephemeral: true,
+      });
+    }
     if (!button) return;
     if (
       button.developerOnly &&

@@ -1,6 +1,6 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 
-const MemberLogDB = require("../../../schemas/memberLog.schema");
+const MemberLogDB = require("../../../schemas/guildConfig.schema");
 
 module.exports = {
   subCommand: "setup.member_log",
@@ -17,7 +17,7 @@ module.exports = {
 
     const guildConfig = {
       guildId: guild.id,
-      logChannelId: logChannel.id,
+      memberLogChannelId: logChannel.id,
       memberRoleId,
       botRoleId,
     };
@@ -28,7 +28,7 @@ module.exports = {
       {
         ...guildConfig,
         guildName: guild.name,
-        logChannelName: logChannel.name,
+        memberLogChannelName: logChannel.name,
       },
       { upsert: true, new: true }
     );

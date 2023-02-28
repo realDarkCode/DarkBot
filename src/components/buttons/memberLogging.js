@@ -3,20 +3,15 @@ const {
   EmbedBuilder,
   PermissionFlagsBits,
 } = require("discord.js");
-
 module.exports = {
-  name: "interactionCreate",
-
+  data: {
+    name: "memberLogging",
+  },
   /**
    *
    * @param {ButtonInteraction} interaction
    */
-  async execute(client, interaction) {
-    // Check if the interaction is memberLogging button interaction
-    if (!interaction.isButton()) return;
-    const buttonInfo = interaction.customId.split("-");
-    if (buttonInfo[0] !== "memberLogging") return;
-
+  async execute(interaction) {
     const { guild, member } = interaction;
     const memberToModerate = (await guild.members.fetch()).get(buttonInfo[2]);
     const errorArray = [];
