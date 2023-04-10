@@ -22,11 +22,12 @@ const isValidMusicInteraction = async (interaction) => {
       ephemeral: true,
     });
     return false;
-  } else if (options.getSubcommand() !== "play") {
+  } else if (options?.getSubcommand() !== "play") {
     const queue = await interaction.client.distube.getQueue(guild);
     if (!queue) {
       interaction.reply({
         content: "⛔ There is no queue playing at this moment.",
+        ephemeral: true,
       });
       return false;
     }

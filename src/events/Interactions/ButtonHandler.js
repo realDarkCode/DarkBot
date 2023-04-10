@@ -26,9 +26,6 @@ module.exports = {
       .setTimestamp();
     if (!interaction.isButton()) return;
 
-    console.log(interaction.customId, interaction.customId.split("-"));
-    console.log(client.components);
-
     const buttonInfo = interaction.customId.split("-");
     const button = client.components.get(buttonInfo[0]);
 
@@ -38,7 +35,6 @@ module.exports = {
         ephemeral: true,
       });
     }
-    if (!button) return;
     if (
       button.developerOnly &&
       interaction.user.id !== config.development.developerID
@@ -48,6 +44,8 @@ module.exports = {
         ephemeral: true,
       });
     }
+    buttonInfo.shift();
+    interaction.buttonInfo = buttonInfo;
     try {
       await button.execute(interaction);
     } catch (error) {

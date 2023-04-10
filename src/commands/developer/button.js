@@ -11,8 +11,8 @@ module.exports = {
     .setDescription("generate a  test button "),
   async execute(interaction) {
     const button = new ButtonBuilder()
-      .setCustomId("say")
-      .setLabel("say hi")
+      .setCustomId("music")
+      .setLabel("music")
       .setStyle(ButtonStyle.Primary);
 
     await interaction.reply({
