@@ -14,20 +14,14 @@ const generateButtons = () => {
   const firstRow = new ActionRowBuilder()
     .addComponents(
       new ButtonBuilder()
-        .setCustomId("music-pause")
-        .setLabel("⏸")
+        .setCustomId("music-prev")
+        .setLabel("⏪")
         .setStyle(ButtonStyle.Success)
     )
     .addComponents(
       new ButtonBuilder()
-        .setCustomId("music-resume")
-        .setLabel("▶")
-        .setStyle(ButtonStyle.Success)
-    )
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-skip")
-        .setLabel("⏩")
+        .setCustomId("music-pause_resume")
+        .setLabel("⏯")
         .setStyle(ButtonStyle.Primary)
     )
     .addComponents(
@@ -35,8 +29,13 @@ const generateButtons = () => {
         .setCustomId("music-stop")
         .setLabel("⏹")
         .setStyle(ButtonStyle.Danger)
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-next")
+        .setLabel("⏩")
+        .setStyle(ButtonStyle.Success)
     );
-
   return [firstRow];
 };
 const handleDistubeEvent = async (client) => {
