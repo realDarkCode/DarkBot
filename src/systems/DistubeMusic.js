@@ -38,10 +38,7 @@ const generateButtons = () => {
     );
   return [firstRow];
 };
-/**
- *
- * @param {Client} client
- */
+
 const handleDistubeEvent = async (client) => {
   const status = (queue) =>
     `Volume: \`${queue.volume}%\` | Filter: \`${
