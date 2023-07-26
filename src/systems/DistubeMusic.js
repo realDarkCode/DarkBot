@@ -1,9 +1,43 @@
-const { Client, EmbedBuilder } = require("discord.js");
+const {
+  Client,
+  EmbedBuilder,
+  ButtonBuilder,
+  ActionRowBuilder,
+  ButtonStyle,
+} = require("discord.js");
 
 /**
  *
  * @param {Client} client
  */
+const generateButtons = () => {
+  const firstRow = new ActionRowBuilder()
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-prev")
+        .setLabel("⏪")
+        .setStyle(ButtonStyle.Success)
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-pause_resume")
+        .setLabel("⏯")
+        .setStyle(ButtonStyle.Primary)
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-stop")
+        .setLabel("⏹")
+        .setStyle(ButtonStyle.Danger)
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-next")
+        .setLabel("⏩")
+        .setStyle(ButtonStyle.Success)
+    );
+  return [firstRow];
+};
 const handleDistubeEvent = async (client) => {
   const status = (queue) =>
     `Volume: \`${queue.volume}%\` | Filter: \`${
@@ -28,6 +62,7 @@ const handleDistubeEvent = async (client) => {
               }\`\nRequested by: ${song.user}\n${status(queue)}`
             ),
         ],
+        components: generateButtons(),
       });
     })
     .on("addSong", (queue, song) => {

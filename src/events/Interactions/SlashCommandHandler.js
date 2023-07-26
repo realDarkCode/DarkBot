@@ -64,7 +64,7 @@ module.exports = {
       \`Command:\` ${interaction.commandName}.${subCommand || ""}
       \`Error:\` ${error.message}
       `);
-      interaction.reply({
+      interaction.channel.send({
         embeds: [errorEmbed],
       });
     }

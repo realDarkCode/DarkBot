@@ -18,18 +18,6 @@ module.exports = {
         )
     )
     .addSubcommand((subcommand) =>
-      subcommand.setName("pause").setDescription("pause the queue")
-    )
-    .addSubcommand((subcommand) =>
-      subcommand.setName("resume").setDescription("resume the queue")
-    )
-    .addSubcommand((subcommand) =>
-      subcommand.setName("skip").setDescription("skip the queue")
-    )
-    .addSubcommand((subcommand) =>
-      subcommand.setName("stop").setDescription("stop the queue")
-    )
-    .addSubcommand((subcommand) =>
       subcommand
         .setName("volume")
         .setDescription("set volume")

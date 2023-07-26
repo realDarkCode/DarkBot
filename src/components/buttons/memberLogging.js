@@ -12,8 +12,8 @@ module.exports = {
    * @param {ButtonInteraction} interaction
    */
   async execute(interaction) {
-    const { guild, member } = interaction;
-    const memberToModerate = (await guild.members.fetch()).get(buttonInfo[2]);
+    const { guild, member, buttonInfo } = interaction;
+    const memberToModerate = (await guild.members.fetch()).get(buttonInfo[1]);
     const errorArray = [];
     const responseEmbed = new EmbedBuilder();
 
@@ -41,7 +41,7 @@ module.exports = {
       });
 
     // Moderate the member
-    switch (buttonInfo[1]) {
+    switch (buttonInfo[0]) {
       case "kick":
         {
           memberToModerate
