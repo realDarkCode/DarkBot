@@ -2,15 +2,19 @@ const { Schema, model, Types } = require("mongoose");
 
 const disciplineMonitorPointSchema = new Schema(
   {
-    member: {
+    type: {
       type: String,
+      required: true,
+    },
+    member: {
+      type: Types.ObjectId,
       required: true,
       ref: "DisciplineMonitor",
     },
     point: {
       type: Number,
       required: true,
-      min: 1,
+      min: -15,
       max: 15,
     },
     reason: {

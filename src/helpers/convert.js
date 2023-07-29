@@ -8,4 +8,15 @@ const convertToChoices = (list) => {
   }, []);
 };
 
-module.exports = { convertToChoices };
+const objKeyListUpperCase = (obj) => {
+  return Object.keys(obj).map((key) => key.toUpperCase());
+};
+
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+module.exports = {
+  convertToChoices,
+  objKeyListUpperCase,
+  capitalizeFirstLetter,
+};

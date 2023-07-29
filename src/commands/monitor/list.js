@@ -1,5 +1,7 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
-const { getMonitorList } = require("../../services/disciplineMonitor.service");
+const {
+  getMonitorListWithPoints,
+} = require("../../services/disciplineMonitor.service");
 
 module.exports = {
   subCommand: "monitor.list",
@@ -10,27 +12,23 @@ module.exports = {
   async execute(interaction) {
     const { options } = interaction;
 
-    const monitorList = await getMonitorList({ class: "seven" });
+    const cls = "seven";
+    const monitorList = await getMonitorListWithPoints({ class: cls });
 
     return interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setColor("Green")
-          .setTitle("Monitor Added Successfully")
+          .setTitle(`Monitor List from class ${cls}`)
           .setDescription(
-            `${monitorList.map((monitor, index) => {
-              if (index < 30) {
-                return `\n**${index + 1}**. ${monitor.name} - \`${
-                  monitor.school_id
-                } - ${monitor.class}\``;
-              } else {
-                return `list is too large to render`;
-              }
-            })}`
+            `${monitorList.splice(0, 30).map((monitor, index, arr) => {
+              return `\n**${index + 1}**. _${monitor.name}_ - \`${
+                monitor.school_id
+              }\` - \`(${monitor.point})\``;
+            })} ${monitorList.length ? "\n..." : ""}`
           )
           .setFooter({
-            text: `Requested by: ${interaction.user.tag}`,
-            iconURL: interaction.user.displayAvatarURL(),
+            text: `**Note:** This is based on the points earned by the monitors.	`,
           }),
       ],
     });

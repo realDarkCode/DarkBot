@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const { convertToChoices } = require("../../helpers/convert");
+const { POINTS, POINTS_CONST } = require("../../config/NDT.config");
 const {
   sectionList,
   classList,
@@ -49,7 +50,57 @@ module.exports = {
             .setDescription("Enter the school id")
             .setRequired(true)
         )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("attendance")
+        .setDescription("add attendance point to monitors")
+        .addStringOption((option) =>
+          option
+            .setName("ids")
+            .setDescription("Enter the School ids [comma separated ids]")
+            .setRequired(true)
+        )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("add_points")
+        .setDescription("add point to monitors")
+        .addStringOption((option) =>
+          option
+            .setName("id")
+            .setDescription("Enter the School id of monitor")
+            .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option
+            .setName("point_type")
+            .setDescription("Point type")
+            .addChoices(...convertToChoices(Object.keys(POINTS_CONST)), {
+              name: "SPECIAL",
+              value: "SPECIAL",
+            })
+            .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option.setName("reason").setDescription("Reason for adding point")
+        )
+        .addNumberOption((option) =>
+          option
+            .setName("point")
+            .setDescription("Point to add")
+            .setMinValue(-15)
+            .setMaxValue(15)
+        )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("top_monitors")
+        .setDescription(
+          "list of most active and inactive monitors from specific class"
+        )
     ),
+
   //     .addSubcommand((subcommand) =>
   //       subcommand
   //         .setName("update_info")
