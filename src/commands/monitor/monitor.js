@@ -8,6 +8,7 @@ const {
   houseList,
 } = require("../../config/NDT.config");
 module.exports = {
+  requiredRole: "973129218345037854",
   data: new SlashCommandBuilder()
     .setName("monitor")
     .setDescription("Manage monitors")

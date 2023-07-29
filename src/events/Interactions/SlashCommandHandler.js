@@ -41,7 +41,17 @@ module.exports = {
         ephemeral: true,
       });
     }
-
+    if (
+      command.requiredRole &&
+      !interaction.member.roles.cache.some(
+        (role) => command.requiredRole === role.id
+      )
+    ) {
+      return interaction.reply({
+        content: `You need <@&${command.requiredRole}> role to use this command`,
+        ephemeral: true,
+      });
+    }
     const subCommand = interaction.options.getSubcommand(false);
     try {
       if (subCommand) {
