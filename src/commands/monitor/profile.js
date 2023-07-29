@@ -16,7 +16,7 @@ module.exports = {
 
     const id = options.getString("id");
     const monitor = await findMonitorById(id);
-    const point = await getPoint(monitor._id);
+
     const responseEmbed = new EmbedBuilder()
       .setColor("Green")
       .setTitle("Monitor Profile");
@@ -24,6 +24,7 @@ module.exports = {
     if (!monitor) {
       responseEmbed.setDescription("Monitor not found with given school id");
     } else {
+      const point = await getPoint(monitor._id);
       const monitorPointHistory = await getMonitorPointHistory(monitor._id);
       responseEmbed.setDescription(
         [
@@ -32,7 +33,7 @@ module.exports = {
           `**Name**: ${capitalizeFirstLetter(monitor.name)}`,
           `**Status**: ${capitalizeFirstLetter(monitor.status)}`,
           `**Class**: ${capitalizeFirstLetter(monitor.class)} ( ${
-            monitor.section || "N/A"
+            capitalizeFirstLetter(monitor.section) || "N/A"
           })`,
           `**Gender:**: ${capitalizeFirstLetter(monitor.gender) || "N/A"}`,
           `**Contact**: ${capitalizeFirstLetter(monitor.contact) || "N/A"}`,

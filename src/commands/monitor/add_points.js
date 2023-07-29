@@ -70,7 +70,7 @@ module.exports = {
               `\`Point Type\`: ${POINT.type}`,
               `\`Point\`: ${POINT.point}`,
               `\`Reason\`: ${POINT.reason || "N/A"} `,
-              `\`Moderated By\`: ${interaction.user.tag}`,
+              `\`Moderated By\`: <@${interaction.user.id}>`,
             ].join("\n")
           )
           .setTimestamp(),
