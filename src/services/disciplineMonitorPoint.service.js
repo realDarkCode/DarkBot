@@ -24,24 +24,36 @@ const addPoint = async (id, pointType, reason, moderateBy) => {
   return await newPoint.save();
 };
 
-const addBulkAttendancePoint = async (ids, moderateBy) => {
-  const monitors = await DisciplineMonitor.find({ school_id: { $in: ids } });
+const addBulkPoint = async (ids, pointType, reason, moderateBy, point) => {
+  const monitors = await DisciplineMonitor.find({
+    school_id: { $regex: ids.join("|") + "$", $options: "i" },
+  });
 
   const dbWrite = [];
-
   monitors.forEach(async (monitor) => {
     dbWrite.push({
-      type: POINTS_CONST["ATTENDANCE"],
+      type: POINTS_CONST[pointType],
       member: monitor._id,
-      point: POINTS["ATTENDANCE"],
-      reason: "Attendance",
+      point: point || POINTS[pointType],
+      reason: reason,
       moderateBy,
     });
   });
   await DisciplineMonitorPoint.create(dbWrite);
+
   return (failedToAdd = ids.filter(
-    (id) => !monitors.some((monitor) => monitor.school_id === id)
+    (id) =>
+      !monitors.some((monitor) => new RegExp(id + "$").test(monitor.school_id))
   ));
+};
+
+const addBulkAttendancePoint = async (ids, moderateBy) => {
+  return await addBulkPoint(
+    ids,
+    POINTS_CONST.ATTENDANCE,
+    "Attend Duty",
+    moderateBy
+  );
 };
 
 const addSpecialPoint = async (id, point, reason, moderateBy) => {
@@ -68,7 +80,9 @@ const getPoint = async (monitorDBId) => {
 const getMonitorPointHistory = async (id) => {
   const monitor = await findMonitorById(id);
   if (!monitor) throw new Error("Monitor not found with school id: " + id);
-  return await DisciplineMonitorPoint.find({ member: monitor._id }).limit(5);
+  return await DisciplineMonitorPoint.find({ member: monitor._id })
+    .sort("-createdAt")
+    .limit(5);
 };
 
 module.exports = {
@@ -77,4 +91,5 @@ module.exports = {
   getMonitorPointHistory,
   addSpecialPoint,
   addBulkAttendancePoint,
+  addBulkPoint,
 };

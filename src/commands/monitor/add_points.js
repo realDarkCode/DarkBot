@@ -1,9 +1,8 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const {
-  addPoint,
-  addSpecialPoint,
+  addBulkPoint,
 } = require("../../services/disciplineMonitorPoint.service");
-
+const { POINTS, POINTS_CONST } = require("../../config/NDT.config");
 module.exports = {
   subCommand: "monitor.add_points",
   /**
@@ -15,9 +14,9 @@ module.exports = {
 
     const embed = new EmbedBuilder();
 
-    const id = options.getString("id");
+    const ids = options.getString("ids").replace(/ /g, "").split(",");
     const pointType = options.getString("point_type");
-    const reason = options.getString("reason");
+    let reason = options.getString("reason");
     const point = options.getNumber("point");
 
     if (pointType !== "SPECIAL" && point > 0) {
@@ -52,12 +51,26 @@ module.exports = {
         });
       }
     }
-    let POINT;
 
     if (pointType !== "SPECIAL") {
-      POINT = await addPoint(id, pointType, reason, interaction.user.id);
+      failedIds = await addBulkPoint(
+        ids,
+        pointType,
+        reason,
+        interaction.user.id,
+        point
+      );
     } else {
-      POINT = await addSpecialPoint(id, point, reason, interaction.user.id);
+      if (pointType === POINTS_CONST.ATTENDANCE) {
+        reason = "Attended Duty";
+      }
+
+      failedIds = await addBulkPoint(
+        ids,
+        pointType,
+        reason,
+        interaction.user.id
+      );
     }
     return interaction.reply({
       embeds: [
@@ -66,11 +79,18 @@ module.exports = {
           .setTitle("Point Added Successfully")
           .setDescription(
             [
-              `\`School Id\`: ${id}`,
-              `\`Point Type\`: ${POINT.type}`,
-              `\`Point\`: ${POINT.point}`,
-              `\`Reason\`: ${POINT.reason || "N/A"} `,
+              ids.length === 1
+                ? `\`Id\`: ${ids[0]}`
+                : `\`Total Requested Ids\`: ${ids.length}`,
+              ,
+              ids.length > 1 ? `\`Total Failed Ids\`: ${failedIds.length}` : "",
+              ids.length > 1 ? `\`Failed Ids\`: ${failedIds.join(", ")}` : "",
+              `\`Point Type\`: ${pointType}`,
+              `\`Point\`: ${POINTS[pointType]}`,
+              `\`Reason\`: ${reason || "N/A"} `,
               `\`Moderated By\`: <@${interaction.user.id}>`,
+
+              ,
             ].join("\n")
           )
           .setTimestamp(),

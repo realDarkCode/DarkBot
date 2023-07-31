@@ -1,6 +1,10 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const { convertToChoices } = require("../../helpers/convert");
-const { POINTS, POINTS_CONST } = require("../../config/NDT.config");
+const {
+  POINTS,
+  POINTS_CONST,
+  requiredRoleId,
+} = require("../../config/NDT.config");
 const {
   sectionList,
   classList,
@@ -8,7 +12,7 @@ const {
   houseList,
 } = require("../../config/NDT.config");
 module.exports = {
-  requiredRole: "973129218345037854",
+  requiredRole: requiredRoleId || null,
   data: new SlashCommandBuilder()
     .setName("monitor")
     .setDescription("Manage monitors")
@@ -39,7 +43,39 @@ module.exports = {
         )
     )
     .addSubcommand((subcommand) =>
-      subcommand.setName("list").setDescription("list all monitors")
+      subcommand
+        .setName("list")
+        .setDescription("list all monitors")
+        .addStringOption((option) =>
+          option
+            .setName("class")
+            .setDescription("Enter the class")
+            .addChoices(...convertToChoices(classList))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("section")
+            .setDescription("Enter the section")
+            .addChoices(...convertToChoices(sectionList))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("house")
+            .setDescription("Enter the house")
+            .addChoices(...convertToChoices(houseList))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("gender")
+            .setDescription("Select the gender")
+            .addChoices(...convertToChoices(["male", "female"]))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("status")
+            .setDescription("Select the status")
+            .addChoices(...convertToChoices(["active", "inactive"]))
+        )
     )
     .addSubcommand((subcommand) =>
       subcommand
@@ -50,6 +86,14 @@ module.exports = {
             .setName("id")
             .setDescription("Enter the school id")
             .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option
+            .setName("class")
+            .setDescription(
+              "Mention class if you want to search by id's last 3 digit"
+            )
+            .addChoices(...convertToChoices(classList))
         )
     )
     .addSubcommand((subcommand) =>
@@ -69,7 +113,7 @@ module.exports = {
         .setDescription("add point to monitors")
         .addStringOption((option) =>
           option
-            .setName("id")
+            .setName("ids")
             .setDescription("Enter the School id of monitor")
             .setRequired(true)
         )
@@ -100,59 +144,79 @@ module.exports = {
         .setDescription(
           "list of most active and inactive monitors from specific class"
         )
+        .addStringOption((option) =>
+          option
+            .setName("class")
+            .setDescription("class of monitor")
+            .addChoices(...convertToChoices(classList))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("gender")
+            .setDescription("gender of monitor")
+            .addChoices(...convertToChoices(["male", "female"]))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("house")
+            .setDescription("house of monitor")
+            .addChoices(...convertToChoices(houseList))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("status")
+            .setDescription("account status of monitor")
+            .addChoices(...convertToChoices(["active", "inactive"]))
+        )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("update_info")
+        .setDescription("update a monitor's info")
+        .addStringOption((option) =>
+          option
+            .setName("id")
+            .setDescription("monitors full school id [9 digit]")
+            .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option.setName("name").setDescription("name of monitor")
+        )
+        .addStringOption((option) =>
+          option
+            .setName("class")
+            .setDescription("class of monitor")
+            .addChoices(...convertToChoices(classList))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("section")
+            .setDescription("Section of monitor")
+            .addChoices(...convertToChoices(sectionList))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("gender")
+            .setDescription("gender of monitor")
+            .addChoices(...convertToChoices(["male", "female"]))
+        )
+        .addStringOption((option) =>
+          option.setName("contact").setDescription("whatsapp number of monitor")
+        )
+        .addStringOption((option) =>
+          option
+            .setName("house")
+            .setDescription("house of monitor")
+            .addChoices(...convertToChoices(houseList))
+        )
+        .addStringOption((option) =>
+          option.setName("date_of_birth").setDescription("format [dd-mm-yyyy]")
+        )
+        .addStringOption((option) =>
+          option
+            .setName("blood_group")
+            .setDescription("blood group of monitor")
+            .addChoices(...convertToChoices(bloodGroupList))
+        )
     ),
-
-  //     .addSubcommand((subcommand) =>
-  //       subcommand
-  //         .setName("update_info")
-  //         .setDescription("update a monitor's info")
-  //         .addStringOption((option) =>
-  //           option
-  //             .setName("id")
-  //             .setDescription("monitors school id")
-  //             .setRequired(true)
-  //         )
-  //         .addStringOption((option) =>
-  //           option
-  //             .setName("class")
-  //             .setDescription("class of monitor")
-  //             .addChoices(...convertToChoices(classList))
-  //         )
-  //         .addStringOption((option) =>
-  //           option
-  //             .setName("section")
-  //             .setDescription("Section of monitor")
-  //             .addChoices(...convertToChoices(sectionList))
-  //         )
-  //         .addStringOption((option) =>
-  //           option
-  //             .setName("gender")
-  //             .addChoices(...convertToChoices(["male", "female"]))
-  //         )
-  //         .addStringOption((option) =>
-  //           option.setName("contact").setDescription("whatsapp number of monitor")
-  //         )
-  //         .addStringOption((option) =>
-  //           option
-  //             .setName("house")
-  //             .setDescription("house of monitor")
-  //             .addChoices(...convertToChoices(houseList))
-  //         )
-  //         .addStringOption((option) =>
-  //           option
-  //             .setName("address")
-  //             .setDescription("residential address of monitor")
-  //         )
-  //         .addStringOption((option) =>
-  //           option
-  //             .setName("date_of_birth")
-  //             .setDescription("date of birth of monitor")
-  //         )
-  //         .addStringOption((option) =>
-  //           option
-  //             .setName("blood_group")
-  //             .setDescription("blood group of monitor")
-  //             .addChoices(...convertToChoices(bloodGroupList))
-  //     )
-  // ),
 };

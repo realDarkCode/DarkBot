@@ -12,18 +12,28 @@ module.exports = {
   async execute(interaction) {
     const { options } = interaction;
 
-    const cls = "seven";
-    const monitorListWithPoint = await getMonitorListWithPoints({ class: cls });
+    await interaction.deferReply();
+
+    const cls = options.getString("class")?.trim() || "seven";
+    const gender = options.getString("gender")?.trim();
+    const house = options.getString("house")?.trim();
+    const status = options.getString("status")?.trim();
+    const monitorListWithPoint = await getMonitorListWithPoints({
+      class: cls,
+      status,
+      gender,
+      house,
+    });
 
     const sortedMonitorList = monitorListWithPoint.sort((a, b) => {
       return b.point - a.point;
     });
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         new EmbedBuilder()
           .setColor("Green")
-          .setTitle(`Top Monitors from class ${cls}`)
+          .setTitle(`Top Monitors`)
           .setDescription(
             [
               "Top 10 Active Monitors:",
@@ -54,7 +64,9 @@ module.exports = {
             ].join("\n")
           )
           .setFooter({
-            text: `**Note:** This is based on the points earned by the monitors.	`,
+            text: `Status:${status || "All"} - Class: ${cls || "All"}- Gender:${
+              gender || "All"
+            } - House:${house || "All"}`,
           })
           .setTimestamp(),
       ],

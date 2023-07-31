@@ -12,14 +12,26 @@ module.exports = {
   async execute(interaction) {
     const { options } = interaction;
 
-    const cls = "seven";
-    const monitorList = await getMonitorListWithPoints({ class: cls });
+    await interaction.deferReply();
+    const cls = options.getString("class") || "seven";
+    const gender = options.getString("gender");
+    const house = options.getString("house");
+    const status = options.getString("status");
+    const section = options.getString("section");
+    const monitorList = await getMonitorListWithPoints({
+      class: cls,
+      gender,
+      house,
+      status,
+      section,
+    });
 
-    return interaction.reply({
+    const _len = monitorList.length;
+    return interaction.editReply({
       embeds: [
         new EmbedBuilder()
           .setColor("Green")
-          .setTitle(`Monitor List from class ${cls}`)
+          .setTitle(`Monitor List`)
           .setDescription(
             monitorList.length === 0
               ? "No monitor list found"
@@ -30,7 +42,11 @@ module.exports = {
                 })}`
           )
           .setFooter({
-            text: `**Note:** This is based on the points earned by the monitors.	`,
+            text: `Total: ${_len}-status:${status || "All"}-class: ${
+              cls || "All"
+            }-gender:${gender || "All"}-house:${house || "All"}-section:${
+              section || "All"
+            }`,
           }),
       ],
     });

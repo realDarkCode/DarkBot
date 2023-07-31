@@ -13,16 +13,28 @@ module.exports = {
    */
   async execute(interaction) {
     const { options } = interaction;
-
-    const id = options.getString("id");
-    const monitor = await findMonitorById(id);
-
+    await interaction.deferReply();
     const responseEmbed = new EmbedBuilder()
       .setColor("Green")
       .setTitle("Monitor Profile");
 
+    const id = options.getString("id")?.trim();
+    const cls = options.getString("class");
+
+    if (id.length !== 3 && id.length !== 9) {
+      responseEmbed.setDescription(
+        "Invalid school id. ID must be 3 or 9 digit long"
+      );
+      return interaction.editReply({
+        embeds: [responseEmbed],
+      });
+    }
+    const monitor = await findMonitorById(id, cls);
+
     if (!monitor) {
-      responseEmbed.setDescription("Monitor not found with given school id");
+      responseEmbed.setDescription(
+        "Monitor not found with given school id: " + id
+      );
     } else {
       const point = await getPoint(monitor._id);
       const monitorPointHistory = await getMonitorPointHistory(monitor._id);
@@ -32,12 +44,24 @@ module.exports = {
           `**Monitor ID**: ${monitor.school_id}`,
           `**Name**: ${capitalizeFirstLetter(monitor.name)}`,
           `**Status**: ${capitalizeFirstLetter(monitor.status)}`,
-          `**Class**: ${capitalizeFirstLetter(monitor.class)} ( ${
-            capitalizeFirstLetter(monitor.section) || "N/A"
+          `**Class**: ${capitalizeFirstLetter(monitor.class)} (${
+            monitor.section ? capitalizeFirstLetter(monitor.section) : "N/A"
           })`,
-          `**Gender:**: ${capitalizeFirstLetter(monitor.gender) || "N/A"}`,
-          `**Contact**: ${capitalizeFirstLetter(monitor.contact) || "N/A"}`,
-          `**House**: ${capitalizeFirstLetter(monitor.house) || "N/A"}`,
+          `**Gender:**: ${
+            monitor.gender ? capitalizeFirstLetter(monitor.gender) : "N/A"
+          }`,
+          `**Contact**: ${
+            monitor.contact ? capitalizeFirstLetter(monitor.contact) : "N/A"
+          }`,
+          `**House**: ${
+            monitor.house ? capitalizeFirstLetter(monitor.house) : "N/A"
+          }`,
+          `**Date of Birth**: ${
+            monitor.date_of_birth ? monitor.date_of_birth : "N/A"
+          }`,
+          `**Blood Group**: ${
+            monitor.blood_group ? monitor.blood_group.toUpperCase() : "N/A"
+          }`,
           "",
           "**Recent Point History:**",
           `${
@@ -54,12 +78,12 @@ module.exports = {
                       }>`
                   )
                   .join("\n")
-              : "No point history found"
+              : "No point history found to show"
           }`,
         ].join("\n")
       );
     }
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [responseEmbed],
     });
   },

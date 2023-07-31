@@ -12,23 +12,25 @@ module.exports = {
   async execute(interaction) {
     const { options } = interaction;
 
+    await interaction.deferReply();
+
     const optionId = options.getString("ids");
-
-    const ids = optionId.split(", ");
-
+    const ids = optionId.replace(/ /g, "").split(",");
     const failedAttendanceIds = await addBulkAttendancePoint(
       ids,
       interaction.user.id
     );
 
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         new EmbedBuilder()
-          .setColor("Greyple")
+          .setColor("Yellow")
           .setTitle("Attendance Added Successfully")
           .setDescription(
             [
               `**Total Attendance**: \`${ids.length}\``,
+              `**Ids**: ${ids.length ? ids.join(", ") : "`N/A`"}`,
+              "",
               `**Failed Attendance**: \`${failedAttendanceIds.length}\``,
               `**Failed Ids**: ${
                 failedAttendanceIds.length
