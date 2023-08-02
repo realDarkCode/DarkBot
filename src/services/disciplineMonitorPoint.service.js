@@ -32,7 +32,7 @@ const addBulkPoint = async (ids, pointType, reason, moderateBy, point) => {
   const dbWrite = [];
   monitors.forEach(async (monitor) => {
     dbWrite.push({
-      type: POINTS_CONST[pointType],
+      type: POINTS_CONST[pointType] || pointType,
       member: monitor._id,
       point: point || POINTS[pointType],
       reason: reason,

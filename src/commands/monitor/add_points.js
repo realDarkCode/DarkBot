@@ -23,7 +23,7 @@ module.exports = {
       return interaction.reply({
         embeds: [
           embed
-            .setColor("RED")
+            .setColor("Red")
             .setTitle("Invalid Point")
             .setDescription("You can only specify point in SPECIAL point type"),
         ],
@@ -53,23 +53,22 @@ module.exports = {
     }
 
     if (pointType !== "SPECIAL") {
-      failedIds = await addBulkPoint(
-        ids,
-        pointType,
-        reason,
-        interaction.user.id,
-        point
-      );
-    } else {
       if (pointType === POINTS_CONST.ATTENDANCE) {
         reason = "Attended Duty";
       }
-
       failedIds = await addBulkPoint(
         ids,
         pointType,
         reason,
         interaction.user.id
+      );
+    } else {
+      failedIds = await addBulkPoint(
+        ids,
+        "SPECIAL",
+        reason,
+        interaction.user.id,
+        point
       );
     }
     return interaction.reply({
@@ -86,7 +85,7 @@ module.exports = {
               ids.length > 1 ? `\`Total Failed Ids\`: ${failedIds.length}` : "",
               ids.length > 1 ? `\`Failed Ids\`: ${failedIds.join(", ")}` : "",
               `\`Point Type\`: ${pointType}`,
-              `\`Point\`: ${POINTS[pointType]}`,
+              `\`Point\`: ${POINTS[pointType] || point}`,
               `\`Reason\`: ${reason || "N/A"} `,
               `\`Moderated By\`: <@${interaction.user.id}>`,
 
