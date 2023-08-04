@@ -27,6 +27,7 @@ const addPoint = async (id, pointType, reason, moderateBy, point) => {
   const monitorPoint = await DisciplineMonitorPoint.findOneAndUpdate(
     { member: monitor._id },
     {
+      school_id: id,
       $inc: { point: POINTS[pointType] || point },
     },
     { new: true, upsert: true }

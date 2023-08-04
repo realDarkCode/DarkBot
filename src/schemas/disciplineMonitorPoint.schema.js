@@ -6,6 +6,9 @@ const disciplineMonitorPointSchema = new Schema(
       type: Number,
       default: 0,
     },
+    school_id: {
+      type: String,
+    },
     member: {
       type: Types.ObjectId,
       required: true,
@@ -13,7 +16,8 @@ const disciplineMonitorPointSchema = new Schema(
     },
   },
   {
-    timestamps: true,
+    versionKey: false,
+    timestamps: false,
   }
 );
 
