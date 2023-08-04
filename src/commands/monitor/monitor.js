@@ -171,7 +171,7 @@ module.exports = {
     )
     .addSubcommand((subcommand) =>
       subcommand
-        .setName("update_info")
+        .setName("update_profile")
         .setDescription("update a monitor's info")
         .addStringOption((option) =>
           option

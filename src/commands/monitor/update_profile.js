@@ -4,7 +4,7 @@ const {
 } = require("../../services/disciplineMonitor.service");
 const { capitalizeFirstLetter } = require("../../helpers/convert");
 module.exports = {
-  subCommand: "monitor.update_info",
+  subCommand: "monitor.update_profile",
   /**
    *
    * @param {ChatInputCommandInteraction} interaction
@@ -20,15 +20,15 @@ module.exports = {
     const gender = options.getString("gender")?.trim();
     const contact = options.getString("contact")?.trim();
     const house = options.getString("house")?.trim();
-    const dateOfBirth = options.getString("date_of_birth")?.trim();
-    const bloodGroup = options.getString("blood_group")?.trim();
+    const date_of_birth = options.getString("date_of_birth")?.trim();
+    const blood_group = options.getString("blood_group")?.trim();
 
     const updatedMonitor = await updateMonitorInfo(id, {
       contact,
       section,
       house,
-      bloodGroup,
-      dateOfBirth,
+      date_of_birth,
+      blood_group,
       cls,
       gender,
       status,

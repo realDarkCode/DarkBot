@@ -81,12 +81,16 @@ module.exports = {
               ids.length === 1
                 ? `\`Id\`: ${ids[0]}`
                 : `\`Total Requested Ids\`: ${ids.length}`,
-              ,
+              `\`Requested Ids\`: ${ids.join(", ")}`,
               ids.length > 1 ? `\`Total Failed Ids\`: ${failedIds.length}` : "",
-              ids.length > 1 ? `\`Failed Ids\`: ${failedIds.join(", ")}` : "",
+              ids.length > 1
+                ? `\`Failed Ids\`: ${failedIds.join(", ") || "N/A"}`
+                : "",
+              "",
               `\`Point Type\`: ${pointType}`,
               `\`Point\`: ${POINTS[pointType] || point}`,
               `\`Reason\`: ${reason || "N/A"} `,
+              "",
               `\`Moderated By\`: <@${interaction.user.id}>`,
 
               ,
