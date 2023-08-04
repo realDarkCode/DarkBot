@@ -1,28 +1,15 @@
-const { Schema, model, Types } = require("mongoose");
+const { Schema, Types, model } = require("mongoose");
 
 const disciplineMonitorPointSchema = new Schema(
   {
-    type: {
-      type: String,
-      required: true,
+    point: {
+      type: Number,
+      default: 0,
     },
     member: {
       type: Types.ObjectId,
       required: true,
       ref: "DisciplineMonitor",
-    },
-    point: {
-      type: Number,
-      required: true,
-      min: -15,
-      max: 15,
-    },
-    reason: {
-      type: String,
-    },
-    moderateBy: {
-      type: String,
-      required: true,
     },
   },
   {

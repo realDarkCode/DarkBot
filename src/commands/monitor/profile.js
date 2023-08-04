@@ -1,9 +1,9 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const { findMonitorById } = require("../../services/disciplineMonitor.service");
-const {
-  getPoint,
-  getMonitorPointHistory,
-} = require("../../services/disciplineMonitorPoint.service");
+const monitorHistoryService = require("../../services/disciplineMonitorPointHistory.service");
+const monitorPointService = require("../../services/disciplineMonitorPoint.service");
+const monitorService = require("../../services/disciplineMonitor.service");
+
 const { capitalizeFirstLetter } = require("../../helpers/convert");
 module.exports = {
   subCommand: "monitor.profile",
@@ -29,15 +29,25 @@ module.exports = {
         embeds: [responseEmbed],
       });
     }
-    const monitor = await findMonitorById(id, cls);
+    if (id.length === 3 && !cls) {
+      responseEmbed.setDescription(
+        "if you are searching with 3 digit id, you must provide class name"
+      );
+      return interaction.editReply({
+        embeds: [responseEmbed],
+      });
+    }
+    const monitor = await monitorService.findMonitorById(id, cls);
 
     if (!monitor) {
       responseEmbed.setDescription(
         "Monitor not found with given school id: " + id
       );
     } else {
-      const point = await getPoint(monitor._id);
-      const monitorPointHistory = await getMonitorPointHistory(monitor._id);
+      const point = await monitorPointService.getPoint(monitor._id);
+
+      const monitorPointHistory =
+        await monitorHistoryService.getMonitorPointHistory(monitor._id);
       responseEmbed.setDescription(
         [
           `**Point**: ${point}`,

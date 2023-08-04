@@ -1,12 +1,13 @@
 const DisciplineMonitor = require("../schemas/disciplineMonitor.schema.js");
+const { filterEmpty } = require("../helpers/convert.js");
+const disciplineMonitorPointService = require("./disciplineMonitorPoint.service.js");
 
-const { getPoint } = require("./disciplineMonitorPoint.service.js");
 const findMonitorById = async (id, cls) => {
   const query = {};
   if (id) query.school_id = { $regex: `${id}$` };
   if (cls) query.class = cls;
 
-  return DisciplineMonitor.findOne({
+  return await DisciplineMonitor.findOne({
     ...query,
   });
 };
@@ -27,11 +28,7 @@ const updateMonitorInfo = async (id, updatedData) => {
   const monitor = await findMonitorById(id);
   if (!monitor) throw new Error("Monitor not found with localId: " + localId);
 
-  const updatedObject = {};
-
-  Object.keys(updatedData).forEach((key) => {
-    if (updatedData[key]) updatedObject[key] = updatedData[key];
-  });
+  const updatedObject = filterEmpty(updatedData);
 
   return await DisciplineMonitor.findByIdAndUpdate(
     monitor._id,
@@ -42,10 +39,7 @@ const updateMonitorInfo = async (id, updatedData) => {
   );
 };
 const getMonitorList = async (filter = { class: "seven" }) => {
-  const query = Object.keys(filter).reduce((acc, key) => {
-    if (filter[key]) acc[key] = filter[key];
-    return acc;
-  }, {});
+  const query = filterEmpty(filter);
 
   return await DisciplineMonitor.find({ ...query });
 };
@@ -54,7 +48,7 @@ const getMonitorListWithPoints = async (query = { class: "seven" }) => {
   const monitorList = await getMonitorList(query);
   const monitorListWithPoint = await Promise.all(
     monitorList.map(async (monitor) => {
-      const point = await getPoint(monitor._id);
+      const point = await disciplineMonitorPointService.getPoint(monitor._id);
       return {
         point,
         name: monitor.name,

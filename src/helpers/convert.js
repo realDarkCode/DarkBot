@@ -15,8 +15,17 @@ const objKeyListUpperCase = (obj) => {
 const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+const filterEmpty = (obj) => {
+  return Object.keys(obj).reduce((acc, key) => {
+    if (obj[key]) acc[key] = obj[key];
+    return acc;
+  }, {});
+};
+
 module.exports = {
   convertToChoices,
   objKeyListUpperCase,
   capitalizeFirstLetter,
+  filterEmpty,
 };

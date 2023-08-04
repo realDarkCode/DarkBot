@@ -106,6 +106,12 @@ module.exports = {
             .setDescription("Enter the School ids [comma separated ids]")
             .setRequired(true)
         )
+        .addStringOption((option) =>
+          option
+            .setName("class")
+            .setDescription("Enter the class [if you want to use 3 digit ids]")
+            .addChoices(...convertToChoices(classList))
+        )
     )
     .addSubcommand((subcommand) =>
       subcommand
@@ -126,6 +132,12 @@ module.exports = {
               value: "SPECIAL",
             })
             .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option
+            .setName("class")
+            .setDescription("Enter the class [if you want to use 3 digit ids]")
+            .addChoices(...convertToChoices(classList))
         )
         .addStringOption((option) =>
           option.setName("reason").setDescription("Reason for adding point")

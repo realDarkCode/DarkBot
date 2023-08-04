@@ -1,95 +1,103 @@
 const DisciplineMonitorPoint = require("../schemas/disciplineMonitorPoint.schema.js");
 const DisciplineMonitor = require("../schemas/disciplineMonitor.schema.js");
 
-const { objKeyListUpperCase } = require("../helpers/convert");
-const { POINTS, POINTS_CONST } = require("../config/NDT.config");
+const monitorPointHistoryService = require("./disciplineMonitorPointHistory.service.js");
+const { objKeyListUpperCase } = require("../helpers/convert.js");
+const { POINTS, POINTS_CONST } = require("../config/NDT.config.js");
 
 const findMonitorBySchoolId = async (id) => {
-  return await DisciplineMonitor.findOne({ school_id: id });
+  return await DisciplineMonitor.findOne({ school_id: { $regex: `${id}$` } });
 };
 const findMonitorById = async (id) => {
   return await DisciplineMonitor.findById(id);
 };
 
-const addPoint = async (id, pointType, reason, moderateBy) => {
+const addPoint = async (id, pointType, reason, moderateBy, point) => {
   const monitor = await findMonitorBySchoolId(id);
   if (!monitor) throw new Error("Monitor not found with school id: " + id);
-  const newPoint = new DisciplineMonitorPoint({
-    type: POINTS_CONST[pointType],
-    member: monitor._id,
-    point: POINTS[pointType],
+
+  const pointHistory = await monitorPointHistoryService.createHistory({
+    monitorId: monitor._id,
+    pointType,
     reason,
     moderateBy,
+    point,
   });
-  return await newPoint.save();
+
+  const monitorPoint = await DisciplineMonitorPoint.findOneAndUpdate(
+    { member: monitor._id },
+    {
+      $inc: { point: POINTS[pointType] || point },
+    },
+    { new: true, upsert: true }
+  );
+
+  return { pointHistory, point: monitorPoint.point, school_id: id };
 };
 
-const addBulkPoint = async (ids, pointType, reason, moderateBy, point) => {
-  const monitors = await DisciplineMonitor.find({
-    school_id: { $regex: ids.join("|") + "$", $options: "i" },
+const addBulkPoints = async ({
+  schoolIds,
+  cls,
+  pointType,
+  reason,
+  moderateBy,
+  point,
+}) => {
+  query = {};
+  if (schoolIds) {
+    query.school_id = { $regex: schoolIds.join("|") + "$", $options: "i" };
+  }
+  if (cls) {
+    query.class = cls;
+  }
+  const monitors = await DisciplineMonitor.find(query).select({
+    _id: 1,
+    school_id: 1,
   });
 
-  const dbWrite = [];
-  monitors.forEach(async (monitor) => {
-    dbWrite.push({
-      type: POINTS_CONST[pointType] || pointType,
-      member: monitor._id,
-      point: point || POINTS[pointType],
-      reason: reason,
-      moderateBy,
-    });
-  });
-  await DisciplineMonitorPoint.create(dbWrite);
+  const monitorSchoolIds = monitors.map((monitor) => monitor.school_id);
 
-  return (failedToAdd = ids.filter(
-    (id) =>
-      !monitors.some((monitor) => new RegExp(id + "$").test(monitor.school_id))
+  const pointAddedTo = await Promise.all(
+    monitorSchoolIds.map(
+      async (id) => await addPoint(id, pointType, reason, moderateBy, point)
+    )
+  );
+
+  return (failedToAdd = schoolIds.filter(
+    (schoolId) =>
+      !pointAddedTo.some((monitor) =>
+        new RegExp(schoolId + "$").test(monitor.school_id)
+      )
   ));
 };
 
-const addBulkAttendancePoint = async (ids, moderateBy) => {
-  return await addBulkPoint(
-    ids,
-    POINTS_CONST.ATTENDANCE,
-    "Attend Duty",
-    moderateBy
-  );
-};
-
-const addSpecialPoint = async (id, point, reason, moderateBy) => {
-  const monitor = await findMonitorBySchoolId(id);
-  if (!monitor) throw new Error("Monitor not found with school id: " + id);
-  const newPoint = new DisciplineMonitorPoint({
-    type: "SPECIAL",
-    member: monitor._id,
-    point: point,
-    reason,
+const addBulkAttendancePoints = async (schoolIds, moderateBy, cls) => {
+  return await addBulkPoints({
+    schoolIds,
+    pointType: POINTS_CONST.ATTENDANCE,
+    reason: "Attend Duty",
+    cls,
     moderateBy,
   });
-  return await newPoint.save();
 };
 
 const getPoint = async (monitorDBId) => {
-  const points = await DisciplineMonitorPoint.find({ member: monitorDBId });
-  return points.reduce((store, point) => {
-    store += point.point;
-    return store;
-  }, 0);
+  const point = await DisciplineMonitorPoint.findOne({ member: monitorDBId });
+
+  return point ? point.point : 0;
 };
 
-const getMonitorPointHistory = async (id) => {
-  const monitor = await findMonitorById(id);
-  if (!monitor) throw new Error("Monitor not found with school id: " + id);
-  return await DisciplineMonitorPoint.find({ member: monitor._id })
-    .sort("-createdAt")
-    .limit(5);
+const getPointBySchoolId = async (schoolId) => {
+  const monitor = await findMonitorBySchoolId(schoolId);
+  if (!monitor)
+    throw new Error("Monitor not found with school id: " + schoolId);
+  return await DisciplineMonitorPoint.findOne({ member: monitor._id });
 };
 
 module.exports = {
   addPoint,
+  addBulkPoints,
+  addBulkAttendancePoints,
   getPoint,
-  getMonitorPointHistory,
-  addSpecialPoint,
-  addBulkAttendancePoint,
-  addBulkPoint,
+  getPointBySchoolId,
 };

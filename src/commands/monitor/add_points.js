@@ -1,7 +1,5 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
-const {
-  addBulkPoint,
-} = require("../../services/disciplineMonitorPoint.service");
+const monitorPointService = require("../../services/disciplineMonitorPoint.service");
 const { POINTS, POINTS_CONST } = require("../../config/NDT.config");
 module.exports = {
   subCommand: "monitor.add_points",
@@ -15,11 +13,42 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     const ids = options.getString("ids").replace(/ /g, "").split(",");
+    const cls = options.getString("class")?.trim();
+
     const pointType = options.getString("point_type");
     let reason = options.getString("reason");
     const point = options.getNumber("point");
 
-    if (pointType !== "SPECIAL" && point > 0) {
+    const isAllValid3Digit = ids.every((id) => id.length === 3 && !isNaN(id));
+    const isAllValid9Digit = ids.every((id) => id.length === 9 && !isNaN(id));
+
+    if (!isAllValid3Digit && !isAllValid9Digit) {
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor("Red")
+            .setTitle("Monitor bulk Point Failed")
+            .setDescription(
+              "Please Enter valid student ids [all should be 3 or 9 digit]"
+            ),
+        ],
+      });
+    }
+    if (isAllValid3Digit && !cls) {
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+
+            .setColor("Red")
+            .setTitle("Monitor bulk Point Failed")
+            .setDescription(
+              "You must specify class if you want to use 3 digit ids."
+            ),
+        ],
+      });
+    }
+
+    if (pointType !== "SPECIAL" && point) {
       return interaction.reply({
         embeds: [
           embed
@@ -52,26 +81,30 @@ module.exports = {
       }
     }
 
+    await interaction.deferReply();
+
     if (pointType !== "SPECIAL") {
       if (pointType === POINTS_CONST.ATTENDANCE) {
         reason = "Attended Duty";
       }
-      failedIds = await addBulkPoint(
-        ids,
+      failedIds = await monitorPointService.addBulkPoints({
+        schoolIds: ids,
+        cls,
         pointType,
         reason,
-        interaction.user.id
-      );
+        moderateBy: interaction.user.id,
+      });
     } else {
-      failedIds = await addBulkPoint(
-        ids,
-        "SPECIAL",
+      failedIds = await monitorPointService.addBulkPoints({
+        schoolIds: ids,
+        cls,
+        pointType: "SPECIAL",
+        point,
         reason,
-        interaction.user.id,
-        point
-      );
+        moderateBy: interaction.user.id,
+      });
     }
-    return interaction.reply({
+    return interaction.editReply({
       embeds: [
         embed
           .setColor("Green")
