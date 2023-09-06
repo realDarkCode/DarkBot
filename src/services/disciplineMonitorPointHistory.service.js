@@ -45,6 +45,30 @@ const createBulkHistory = async (
   return DisciplineMonitorPointHistory.create(monitorPointHistoryWrite);
 };
 
+const getWeeklyActiveMonitors = async () => {
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  const mostActiveMonitor = await DisciplineMonitorPointHistory.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $gte: oneWeekAgo, // Filter documents created within the last week
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "$member",
+        totalPoint: { $sum: "$point" },
+      },
+    },
+    {
+      $sort: { totalPoint: -1 },
+    },
+  ]);
+  return mostActiveMonitor;
+};
 const getMonitorPointHistory = async (dbId, limit = 5) => {
   if (dbId) {
     const monitor = await DisciplineMonitor.findById(dbId);
@@ -63,4 +87,5 @@ module.exports = {
   createBulkHistory,
   getMonitorPointHistory,
   findHistoryById,
+  getWeeklyActiveMonitors,
 };

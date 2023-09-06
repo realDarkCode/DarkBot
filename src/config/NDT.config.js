@@ -1,6 +1,6 @@
 const classList = ["seven", "eight", "nine", "ten", "eleven"];
 
-const requiredRoleId = "868526806972653609";
+const requiredRoleId = "973129218345037854";
 const sectionList = [
   "togor",
   "kadam",

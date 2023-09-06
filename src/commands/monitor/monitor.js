@@ -183,6 +183,25 @@ module.exports = {
     )
     .addSubcommand((subcommand) =>
       subcommand
+        .setName("weekly_top_monitors")
+        .setDescription(
+          "list of most weekly active monitors from specific class"
+        )
+        .addStringOption((option) =>
+          option
+            .setName("class")
+            .setDescription("class of monitor")
+            .addChoices(...convertToChoices(classList))
+        )
+        .addStringOption((option) =>
+          option
+            .setName("gender")
+            .setDescription("gender of monitor")
+            .addChoices(...convertToChoices(["male", "female"]))
+        )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
         .setName("update_profile")
         .setDescription("update a monitor's info")
         .addStringOption((option) =>
