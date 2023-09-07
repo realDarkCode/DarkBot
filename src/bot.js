@@ -9,7 +9,7 @@ const {
 // Initialize the client
 const { Guilds, GuildMembers, GuildMessages, GuildVoiceStates } =
   GatewayIntentBits;
-const { User, Message, GuildMember, ThreadMember } = Partials;
+const { Message, ThreadMember } = Partials;
 const client = new Client({
   intents: [Guilds, GuildMembers, GuildMessages, GuildVoiceStates],
   partials: [Message, ThreadMember],
@@ -21,6 +21,7 @@ client.subCommands = new Collection();
 client.components = new Collection();
 client.guildConfig = new Collection();
 client.color = "#1975FC";
+client.activityInterval = null;
 
 const { DisTube } = require("distube");
 const { SpotifyPlugin } = require("@distube/spotify");

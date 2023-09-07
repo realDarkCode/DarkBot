@@ -5,11 +5,11 @@ const {
   ActionRowBuilder,
   ButtonStyle,
 } = require("discord.js");
+const {
+  updateMusicStatus,
+  updateRuntimeStatus,
+} = require("../services/botPresence.discord");
 
-/**
- *
- * @param {Client} client
- */
 const generateButtons = () => {
   const firstRow = new ActionRowBuilder()
     .addComponents(
@@ -38,6 +38,10 @@ const generateButtons = () => {
     );
   return [firstRow];
 };
+/**
+ *
+ * @param {Client} client
+ */
 const handleDistubeEvent = async (client) => {
   const status = (queue) =>
     `Volume: \`${queue.volume}%\` | Filter: \`${
@@ -50,8 +54,17 @@ const handleDistubeEvent = async (client) => {
         : "Off"
     }\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
   client.distube
+
+    .on("initQueue", (queue) => {
+      queue.autoplay = false;
+      queue.volume = 70;
+
+      clearInterval(queue.client.activityIntervalId);
+      updateMusicStatus(queue);
+    })
     .on("playSong", (queue, song) => {
-      client.user.setActivity("Music!", { type: "PLAYING" });
+      updateMusicStatus(queue);
+
       queue.textChannel.send({
         embeds: [
           new EmbedBuilder()
@@ -66,7 +79,8 @@ const handleDistubeEvent = async (client) => {
       });
     })
     .on("addSong", (queue, song) => {
-      client.user.setActivity("Music!", { type: "PLAYING" });
+      updateMusicStatus(queue);
+
       queue.textChannel.send({
         embeds: [
           new EmbedBuilder()
@@ -79,7 +93,8 @@ const handleDistubeEvent = async (client) => {
       });
     })
     .on("addList", (queue, playlist) => {
-      client.user.setActivity("Music!", { type: "PLAYING" });
+      updateMusicStatus(queue);
+
       queue.textChannel.send({
         embeds: [
           new EmbedBuilder()
@@ -93,7 +108,8 @@ const handleDistubeEvent = async (client) => {
       });
     })
     .on("error", (channel, e) => {
-      client.user.setActivity("Server", { type: "WATCHING" });
+      updateMusicStatus(queue);
+
       channel.send({
         embeds: [
           new EmbedBuilder()
@@ -115,6 +131,7 @@ const handleDistubeEvent = async (client) => {
             ),
         ],
       });
+      updateRuntimeStatus(queue.client);
     })
     .on("searchNoResult", (message, query) =>
       message.channel.send({
@@ -131,6 +148,10 @@ const handleDistubeEvent = async (client) => {
           new EmbedBuilder().setColor("Orange").setDescription("✅ Finished!"),
         ],
       });
+      updateRuntimeStatus(queue.client);
+    })
+    .on("disconnect", (queue) => {
+      updateRuntimeStatus(queue.client);
     });
 };
 
