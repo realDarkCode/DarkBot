@@ -46,7 +46,7 @@ const addBulkPoints = async ({
 }) => {
   query = {};
   if (schoolIds) {
-    query.school_id = { $regex: schoolIds.join("|") + "$", $options: "i" };
+    query.school_id = { $regex: `(${schoolIds.join("|")})$` };
   }
   if (cls) {
     query.class = cls;
