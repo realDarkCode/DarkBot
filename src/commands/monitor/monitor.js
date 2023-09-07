@@ -1,10 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const { convertToChoices } = require("../../helpers/convert");
-const {
-  POINTS,
-  POINTS_CONST,
-  requiredRoleId,
-} = require("../../config/NDT.config");
+const { POINTS, POINTS_CONST } = require("../../config/NDT.config");
 const {
   sectionList,
   classList,
@@ -12,7 +8,7 @@ const {
   houseList,
 } = require("../../config/NDT.config");
 module.exports = {
-  requiredRole: requiredRoleId || null,
+  requiredRole: process.env.NDTRoleId || null,
   data: new SlashCommandBuilder()
     .setName("monitor")
     .setDescription("Manage monitors")

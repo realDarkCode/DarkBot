@@ -1,6 +1,5 @@
 const classList = ["seven", "eight", "nine", "ten", "eleven"];
 
-const requiredRoleId = "973129218345037854";
 const sectionList = [
   "togor",
   "kadam",
@@ -44,5 +43,4 @@ module.exports = {
   bloodGroupList,
   POINTS,
   POINTS_CONST,
-  requiredRoleId,
 };
