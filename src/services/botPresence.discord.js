@@ -45,7 +45,7 @@ async function updateRuntimeStatus(client) {
         },
       ],
     });
-  }, 1000 * 60 * 5);
+  }, 1000 * 60 * 123);
 }
 
 async function updateMusicStatus(queue) {
