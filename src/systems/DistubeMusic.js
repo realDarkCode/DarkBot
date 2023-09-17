@@ -76,8 +76,6 @@ const handleDistubeEvent = async (client) => {
       });
     })
     .on("addSong", (queue, song) => {
-      updateMusicStatus(queue);
-
       queue.textChannel.send({
         embeds: [
           new EmbedBuilder()
@@ -90,8 +88,6 @@ const handleDistubeEvent = async (client) => {
       });
     })
     .on("addList", (queue, playlist) => {
-      updateMusicStatus(queue);
-
       queue.textChannel.send({
         embeds: [
           new EmbedBuilder()
@@ -105,8 +101,6 @@ const handleDistubeEvent = async (client) => {
       });
     })
     .on("error", (channel, e) => {
-      updateMusicStatus(queue);
-
       channel.send({
         embeds: [
           new EmbedBuilder()
