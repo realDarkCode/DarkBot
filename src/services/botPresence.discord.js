@@ -33,7 +33,7 @@ const activities = [
 ];
 
 async function updateRuntimeStatus(client) {
-  client.activityIntervalId = setInterval(async () => {
+  async function _() {
     const d = new Date();
     d.setMilliseconds(d.getMilliseconds() - client.uptime);
     await client.user.setPresence({
@@ -45,6 +45,11 @@ async function updateRuntimeStatus(client) {
         },
       ],
     });
+  }
+
+  _();
+  client.activityIntervalId = setInterval(async () => {
+    _();
   }, 1000 * 60 * 123);
 }
 
