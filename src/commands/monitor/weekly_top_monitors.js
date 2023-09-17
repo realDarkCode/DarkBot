@@ -27,13 +27,17 @@ module.exports = {
           .setDescription(
             [
               "Top 10 weekly Active Monitors:",
-              `${weeklyStar.splice(0, 10).map((monitor, index, arr) => {
+              `${weeklyStar.slice(0, 10).map((monitor, index, arr) => {
                 if (arr.length) {
                   return `\n**${index + 1}**. \`${monitor.totalPoint}\` - ${
                     monitor.name
-                  } - \`${monitor.school_id}\` - ${capitalizeFirstLetter(
-                    monitor.class
-                  )} - ${capitalizeFirstLetter(monitor.section)}`;
+                  } - \`${monitor.school_id}\` - ${
+                    monitor.class ? capitalizeFirstLetter(monitor.class) : "N/A"
+                  } - ${
+                    monitor.section
+                      ? capitalizeFirstLetter(monitor.section)
+                      : "N/A"
+                  }`;
                 } else {
                   return `Not enough data found for this class to rank`;
                 }
