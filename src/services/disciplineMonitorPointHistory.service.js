@@ -46,14 +46,15 @@ const createBulkHistory = async (
 };
 
 const getWeeklyActiveMonitors = async () => {
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const lastSunday = new Date();
+  const today = new Date();
+  lastSunday.setDate(today.getDate() - today.getDay() - 1);
 
   const mostActiveMonitor = await DisciplineMonitorPointHistory.aggregate([
     {
       $match: {
         createdAt: {
-          $gte: oneWeekAgo, // Filter documents created within the last week
+          $gte: lastSunday, // Filter documents created within the last week
         },
       },
     },
