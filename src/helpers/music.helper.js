@@ -132,7 +132,7 @@ const generateMusicStatusButtons = (queue) => {
 };
 
 const generateMusicPlayerStatus = (queue, s) => {
-  const song = s || queue[0].songs[0];
+  const song = s || queue.songs[0];
   return {
     embeds: [
       new EmbedBuilder()
@@ -149,9 +149,9 @@ const generateMusicPlayerStatus = (queue, s) => {
             "",
             `Status: \`${queue.paused ? "Paused" : "Playing"}\` | Queue: \`${
               queue.formattedCurrentTime
-            }\` / \`${queue.formattedDuration}\` | Songs: \`1/${
-              queue.songs.length
-            }\``,
+            }\` / \`${queue.formattedDuration}\` | Songs: \`${
+              queue.previousSongs.length + 1
+            }/${queue.songs.length + queue.previousSongs.length}\``,
             `Volume: \`${queue.volume}%\` | Loop: \`${
               queue.repeatMode
                 ? queue.repeatMode === 2
