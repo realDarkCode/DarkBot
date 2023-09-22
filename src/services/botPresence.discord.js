@@ -1,5 +1,6 @@
 const { Client, ActivityType } = require("discord.js");
 const { timestampToRelativeTime } = require("../helpers/convert");
+const { resetPlayer } = require("../helpers/music.helper");
 /**
  *
  * @param {Client} client
@@ -33,6 +34,7 @@ const activities = [
 ];
 
 async function updateRuntimeStatus(client) {
+  resetPlayer({ client });
   async function _() {
     const d = new Date();
     d.setMilliseconds(d.getMilliseconds() - client.uptime);

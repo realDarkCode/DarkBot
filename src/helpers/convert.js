@@ -46,10 +46,29 @@ function timestampToRelativeTime(current, previous) {
     return "approximately " + Math.round(elapsed / msPerYear) + " years";
   }
 }
+
+const generateProgressBar = (length, totalLength, barLength = 20) => {
+  const progress = (length / totalLength) * barLength;
+  const progressBar = "█".repeat(progress) + "-".repeat(barLength - progress);
+  return `[${progressBar}]`;
+};
+
+const secondsToDuration = (seconds) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  const formattedSeconds = String(Math.round(remainingSeconds)).padStart(
+    2,
+    "0"
+  );
+  return `${minutes}:${formattedSeconds}`;
+};
+
 module.exports = {
   convertToChoices,
   objKeyListUpperCase,
   capitalizeFirstLetter,
   filterEmpty,
   timestampToRelativeTime,
+  generateProgressBar,
+  secondsToDuration,
 };

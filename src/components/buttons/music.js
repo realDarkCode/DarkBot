@@ -1,5 +1,8 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
-const { isValidMusicInteraction } = require("../../helpers/music.helper");
+const {
+  isValidMusicInteraction,
+  resetPlayer,
+} = require("../../helpers/music.helper");
 module.exports = {
   data: {
     name: "music",
@@ -18,6 +21,10 @@ module.exports = {
     const VOLUME_AMOUNT = 10;
     const embed = new EmbedBuilder();
 
+    const replyInteraction = async (content) => {
+      return await interaction.reply(content);
+    };
+
     switch (buttonInfo[0]) {
       case "seekBackward": {
         if (queue.currentTime < SEEK_TIME) {
@@ -25,7 +32,7 @@ module.exports = {
         } else {
           client.distube.seek(guild, queue.currentTime - SEEK_TIME);
         }
-        return await interaction.reply({
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Green")
@@ -39,7 +46,7 @@ module.exports = {
       case "pauseResume": {
         if (queue.paused) {
           client.distube.resume(guild);
-          return await interaction.reply({
+          return await replyInteraction({
             embeds: [
               embed
                 .setColor("Yellow")
@@ -50,7 +57,7 @@ module.exports = {
           });
         } else {
           client.distube.pause(guild);
-          return await interaction.reply({
+          return await replyInteraction({
             embeds: [
               embed
                 .setColor("Yellow")
@@ -62,12 +69,8 @@ module.exports = {
         }
       }
       case "seekForward": {
-        if (queue.currentTime + SEEK_TIME > queue.duration) {
-          client.distube.seek(guild, queue.duration);
-        } else {
-          client.distube.seek(guild, queue.currentTime + SEEK_TIME);
-        }
-        return await interaction.reply({
+        client.distube.seek(guild, queue.currentTime + SEEK_TIME);
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Green")
@@ -80,7 +83,7 @@ module.exports = {
 
       case "prevSong": {
         if (!queue.previousSongs.length) {
-          return await interaction.reply({
+          return await replyInteraction({
             embeds: [
               embed
                 .setColor("Red")
@@ -90,7 +93,7 @@ module.exports = {
           });
         }
         await client.distube.previous(guild);
-        return await interaction.reply({
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Green")
@@ -102,7 +105,8 @@ module.exports = {
       }
       case "stop": {
         client.distube.stop(guild);
-        return await interaction.reply({
+        resetPlayer(queue);
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Green")
@@ -114,7 +118,7 @@ module.exports = {
       }
       case "nextSong": {
         if (queue.songs.length <= 1) {
-          return await interaction.reply({
+          return await replyInteraction({
             embeds: [
               embed
                 .setColor("Red")
@@ -124,7 +128,7 @@ module.exports = {
           });
         }
         client.distube.skip(guild);
-        return await interaction.reply({
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Green")
@@ -137,7 +141,7 @@ module.exports = {
       case "toggleShuffle": {
         await queue.shuffle(guild);
 
-        return await interaction.reply({
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Yellow")
@@ -149,7 +153,7 @@ module.exports = {
       }
       case "decreaseVolume": {
         if (queue.volume <= 0 || queue.volume - VOLUME_AMOUNT <= 0) {
-          return await interaction.reply({
+          return await replyInteraction({
             embeds: [
               embed
                 .setColor("Red")
@@ -159,7 +163,7 @@ module.exports = {
           });
         }
         client.distube.setVolume(guild, queue.volume - VOLUME_AMOUNT);
-        return await interaction.reply({
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Yellow")
@@ -173,7 +177,7 @@ module.exports = {
       }
       case "increaseVolume": {
         if (queue.volume >= 100 || queue.volume + VOLUME_AMOUNT >= 100) {
-          return await interaction.reply({
+          return await replyInteraction({
             embeds: [
               embed
                 .setColor("Red")
@@ -183,7 +187,7 @@ module.exports = {
           });
         }
         client.distube.setVolume(guild, queue.volume + VOLUME_AMOUNT);
-        return await interaction.reply({
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Yellow")
@@ -195,7 +199,7 @@ module.exports = {
       }
       case "toggleAutoplay": {
         let mode = await queue.toggleAutoplay(guild);
-        return await interaction.reply({
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Yellow")
@@ -208,7 +212,7 @@ module.exports = {
       case "toggleLoop": {
         let repeatMode = await client.distube.setRepeatMode(queue);
 
-        return await interaction.reply({
+        return await replyInteraction({
           embeds: [
             embed
               .setColor("Yellow")
@@ -221,7 +225,7 @@ module.exports = {
         });
       }
       case "viewQueue": {
-        return await interaction.reply({
+        return await replyInteraction({
           embeds: [
             embed.setColor("Blue").setDescription(
               `${queue.songs.map((song, index) => {

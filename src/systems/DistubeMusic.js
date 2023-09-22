@@ -1,151 +1,42 @@
-const {
-  Client,
-  EmbedBuilder,
-  ButtonBuilder,
-  ActionRowBuilder,
-  ButtonStyle,
-} = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const {
   updateMusicStatus,
   updateRuntimeStatus,
 } = require("../services/botPresence.discord");
 
+const {
+  generateMusicPlayerStatus,
+  updateMusicPlayerStatus,
+  resetPlayer,
+} = require("../helpers/music.helper");
 /**
  *
  * ⏪⏯⏹️⏩
  * ⏮🔁🔀⏭
  * 🔉🔢🈁🔊
  */
-const generateButtons = () => {
-  const firstRow = new ActionRowBuilder()
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-seekBackward")
-        .setLabel("⏪")
-        .setStyle(ButtonStyle.Success)
-    )
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-pauseResume")
-        .setLabel("⏯")
-        .setStyle(ButtonStyle.Success)
-    )
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-stop")
-        .setLabel("⏹️")
-        .setStyle(ButtonStyle.Danger)
-    )
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-seekForward")
-        .setLabel("⏩")
-        .setStyle(ButtonStyle.Success)
-    );
-  const secondRow = new ActionRowBuilder()
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-prevSong")
-        .setLabel("⏮")
-        .setStyle(ButtonStyle.Primary)
-    )
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-toggleLoop")
-        .setLabel("🔁")
-        .setStyle(ButtonStyle.Success)
-    )
-
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-toggleAutoplay")
-        .setLabel("🈁")
-        .setStyle(ButtonStyle.Success)
-    )
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-nextSong")
-        .setLabel("⏭")
-        .setStyle(ButtonStyle.Primary)
-    );
-
-  const thirdRow = new ActionRowBuilder()
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-decreaseVolume")
-        .setLabel("🔉")
-        .setStyle(ButtonStyle.Secondary)
-    )
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-viewQueue")
-        .setLabel("🔢")
-        .setStyle(ButtonStyle.Secondary)
-    )
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-toggleShuffle")
-        .setLabel("🔀")
-        .setStyle(ButtonStyle.Secondary)
-    )
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId("music-increaseVolume")
-        .setLabel("🔊")
-        .setStyle(ButtonStyle.Secondary)
-    );
-
-  return [firstRow, secondRow, thirdRow];
-};
 
 const handleDistubeEvent = async (client) => {
-  const status = (queue, song) => {
-    return {
-      embeds: [
-        new EmbedBuilder()
-          .setColor("Green")
-          .setThumbnail(song.thumbnail)
-          .setDescription(
-            [
-              `**Playing:** \`${song.name}\` - \`${song.formattedDuration}\` `,
-              `**Requested by: **${song.user} `,
-              `**Duration:** \`${queue.currentTime}\`/\`${song.duration}\` `,
-              "",
-              `Status: \`${
-                queue.paused ? "Paused" : "Playing"
-              }\` | Queue Duration: \`${queue.formattedCurrentTime}\` / \`${
-                queue.formattedDuration
-              }\``,
-              `Volume: \`${queue.volume}%\` | Loop: \`${
-                queue.repeatMode
-                  ? queue.repeatMode === 2
-                    ? "Queue"
-                    : "Song"
-                  : "Off"
-              }\` | Autoplay: \`${
-                queue.autoplay ? "On" : "Off"
-              }\` | Shuffle: \`${queue.shuffle ? "On" : "Off"}\``,
-            ].join("\n")
-          )
-          .setFooter({ text: song.uploader.name })
-          .setTimestamp(),
-      ],
-
-      components: generateButtons(),
-    };
-  };
-
   client.distube
     .on("initQueue", (queue) => {
       queue.autoplay = false;
-      queue.volume = 70;
+      queue.volume = 80;
       queue.shuffle = false;
+
       clearInterval(queue.client.activityIntervalId);
+      resetPlayer(queue);
       updateMusicStatus(queue);
+
+      queue.playerIntervalId = setInterval(() => {
+        updateMusicPlayerStatus(queue);
+      }, 1000 * 5);
     })
-    .on("playSong", (queue, song) => {
+    .on("playSong", async (queue, song) => {
       updateMusicStatus(queue);
-      queue.textChannel.send(status(queue, song));
+      const msg = await queue.textChannel.send(
+        generateMusicPlayerStatus(queue, song)
+      );
+      client.musicControllerMsgId = msg.id;
     })
     .on("addSong", (queue, song) => {
       queue.textChannel.send({
