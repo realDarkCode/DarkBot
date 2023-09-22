@@ -29,23 +29,5 @@ module.exports = {
             .setMinValue(0)
             .setMaxValue(100)
         )
-    )
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("options")
-        .setDescription("select a option")
-        .addStringOption((option) =>
-          option
-            .setName("options")
-            .setDescription("select a option")
-            .setRequired(true)
-            .addChoices(
-              { name: "🔢 View Queue", value: "queue" },
-              { name: "🔀 Shuffle Queue", value: "shuffle" },
-              { name: "🔄 Toggle Auto Play Modes", value: "autoPlay" },
-              { name: "🈁 Add Related Songs", value: "relatedSong" },
-              { name: "🔁 Toggle Repeat Songs", value: "repeatMode" }
-            )
-        )
     ),
 };

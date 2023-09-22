@@ -10,70 +10,142 @@ const {
   updateRuntimeStatus,
 } = require("../services/botPresence.discord");
 
+/**
+ *
+ * ⏪⏯⏹️⏩
+ * ⏮🔁🔀⏭
+ * 🔉🔢🈁🔊
+ */
 const generateButtons = () => {
   const firstRow = new ActionRowBuilder()
     .addComponents(
       new ButtonBuilder()
-        .setCustomId("music-prev")
+        .setCustomId("music-seekBackward")
         .setLabel("⏪")
         .setStyle(ButtonStyle.Success)
     )
     .addComponents(
       new ButtonBuilder()
-        .setCustomId("music-pause_resume")
+        .setCustomId("music-pauseResume")
         .setLabel("⏯")
-        .setStyle(ButtonStyle.Primary)
+        .setStyle(ButtonStyle.Success)
     )
     .addComponents(
       new ButtonBuilder()
         .setCustomId("music-stop")
-        .setLabel("⏹")
+        .setLabel("⏹️")
         .setStyle(ButtonStyle.Danger)
     )
     .addComponents(
       new ButtonBuilder()
-        .setCustomId("music-next")
+        .setCustomId("music-seekForward")
         .setLabel("⏩")
         .setStyle(ButtonStyle.Success)
     );
-  return [firstRow];
+  const secondRow = new ActionRowBuilder()
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-prevSong")
+        .setLabel("⏮")
+        .setStyle(ButtonStyle.Primary)
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-toggleLoop")
+        .setLabel("🔁")
+        .setStyle(ButtonStyle.Success)
+    )
+
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-toggleAutoplay")
+        .setLabel("🈁")
+        .setStyle(ButtonStyle.Success)
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-nextSong")
+        .setLabel("⏭")
+        .setStyle(ButtonStyle.Primary)
+    );
+
+  const thirdRow = new ActionRowBuilder()
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-decreaseVolume")
+        .setLabel("🔉")
+        .setStyle(ButtonStyle.Secondary)
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-viewQueue")
+        .setLabel("🔢")
+        .setStyle(ButtonStyle.Secondary)
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-toggleShuffle")
+        .setLabel("🔀")
+        .setStyle(ButtonStyle.Secondary)
+    )
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId("music-increaseVolume")
+        .setLabel("🔊")
+        .setStyle(ButtonStyle.Secondary)
+    );
+
+  return [firstRow, secondRow, thirdRow];
 };
 
 const handleDistubeEvent = async (client) => {
-  const status = (queue) =>
-    `Volume: \`${queue.volume}%\` | Filter: \`${
-      queue.filters.names.join(", ") || "Off"
-    }\` | Loop: \`${
-      queue.repeatMode
-        ? queue.repeatMode === 2
-          ? "All Queue"
-          : "This Song"
-        : "Off"
-    }\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
-  client.distube
+  const status = (queue, song) => {
+    return {
+      embeds: [
+        new EmbedBuilder()
+          .setColor("Green")
+          .setThumbnail(song.thumbnail)
+          .setDescription(
+            [
+              `**Playing:** \`${song.name}\` - \`${song.formattedDuration}\` `,
+              `**Requested by: **${song.user} `,
+              `**Duration:** \`${queue.currentTime}\`/\`${song.duration}\` `,
+              "",
+              `Status: \`${
+                queue.paused ? "Paused" : "Playing"
+              }\` | Queue Duration: \`${queue.formattedCurrentTime}\` / \`${
+                queue.formattedDuration
+              }\``,
+              `Volume: \`${queue.volume}%\` | Loop: \`${
+                queue.repeatMode
+                  ? queue.repeatMode === 2
+                    ? "Queue"
+                    : "Song"
+                  : "Off"
+              }\` | Autoplay: \`${
+                queue.autoplay ? "On" : "Off"
+              }\` | Shuffle: \`${queue.shuffle ? "On" : "Off"}\``,
+            ].join("\n")
+          )
+          .setFooter({ text: song.uploader.name })
+          .setTimestamp(),
+      ],
 
+      components: generateButtons(),
+    };
+  };
+
+  client.distube
     .on("initQueue", (queue) => {
       queue.autoplay = false;
       queue.volume = 70;
-
+      queue.shuffle = false;
       clearInterval(queue.client.activityIntervalId);
       updateMusicStatus(queue);
     })
     .on("playSong", (queue, song) => {
       updateMusicStatus(queue);
-
-      queue.textChannel.send({
-        embeds: [
-          new EmbedBuilder()
-            .setColor("Green")
-            .setDescription(
-              `🎵 Playing \`${song.name}\` - \`${
-                song.formattedDuration
-              }\`\nRequested by: ${song.user}\n${status(queue)}`
-            ),
-        ],
-        components: generateButtons(),
-      });
+      queue.textChannel.send(status(queue, song));
     })
     .on("addSong", (queue, song) => {
       queue.textChannel.send({

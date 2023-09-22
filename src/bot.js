@@ -22,6 +22,7 @@ client.components = new Collection();
 client.guildConfig = new Collection();
 client.color = "#1975FC";
 client.activityIntervalId = null;
+client.musicControllerMsgId = null;
 
 const { DisTube } = require("distube");
 const { SpotifyPlugin } = require("@distube/spotify");
