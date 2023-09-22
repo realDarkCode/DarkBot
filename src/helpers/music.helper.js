@@ -131,8 +131,7 @@ const generateMusicStatusButtons = (queue) => {
   return [firstRow, secondRow, thirdRow];
 };
 
-const generateMusicPlayerStatus = (queue, s) => {
-  const song = s || queue.songs[0];
+const generateMusicPlayerStatus = (queue, song) => {
   return {
     embeds: [
       new EmbedBuilder()
@@ -180,6 +179,7 @@ const updateMusicPlayerStatus = async (queue) => {
   if (!msg) return;
 
   const song = queue.songs[0];
+  if (!song) return;
   await msg.edit(generateMusicPlayerStatus(queue, song));
 };
 
