@@ -38,6 +38,7 @@ const handleDistubeEvent = async (client) => {
       client.musicControllerMsgId = msg.id;
     })
     .on("addSong", (queue, song) => {
+      queue.client.musicControllerMsgId = null;
       queue.textChannel.send({
         embeds: [
           new EmbedBuilder()

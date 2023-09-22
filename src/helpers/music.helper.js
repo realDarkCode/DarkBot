@@ -131,7 +131,8 @@ const generateMusicStatusButtons = (queue) => {
   return [firstRow, secondRow, thirdRow];
 };
 
-const generateMusicPlayerStatus = (queue, song) => {
+const generateMusicPlayerStatus = (queue, s) => {
+  const song = s || queue[0].songs[0];
   return {
     embeds: [
       new EmbedBuilder()
