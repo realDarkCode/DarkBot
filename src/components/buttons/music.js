@@ -16,6 +16,13 @@ module.exports = {
     const { buttonInfo, guild, client, user } = interaction;
     const isValid = await isValidMusicInteraction(interaction);
     if (!isValid) return;
+    const msgId = interaction.message.id;
+    if (msgId !== interaction.client.musicControllerMsgId)
+      return interaction.reply({
+        content: "This is outdated please use the latest message button.",
+        ephemeral: true,
+      });
+
     const queue = await client.distube.getQueue(guild);
 
     const SEEK_TIME = 15;
