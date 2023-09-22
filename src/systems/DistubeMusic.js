@@ -22,7 +22,6 @@ const handleDistubeEvent = async (client) => {
       queue.autoplay = false;
       queue.volume = 80;
       queue.shuffle = false;
-
       clearInterval(queue.client.activityIntervalId);
       resetPlayer(queue);
       updateMusicStatus(queue);

@@ -50,6 +50,7 @@ const generateMusicStatusButtons = (queue) => {
         .setCustomId("music-seekBackward")
         .setLabel("⏪")
         .setStyle(ButtonStyle.Success)
+        .setDisabled(queue.currentTime <= 15)
     )
     .addComponents(
       new ButtonBuilder()
@@ -68,6 +69,7 @@ const generateMusicStatusButtons = (queue) => {
         .setCustomId("music-seekForward")
         .setLabel("⏩")
         .setStyle(ButtonStyle.Success)
+        .setDisabled(queue.currentTime + 15 >= queue.songs[0].duration)
     );
   const secondRow = new ActionRowBuilder()
     .addComponents(
@@ -75,6 +77,7 @@ const generateMusicStatusButtons = (queue) => {
         .setCustomId("music-prevSong")
         .setLabel("⏮")
         .setStyle(ButtonStyle.Primary)
+        .setDisabled(queue.previousSongs.length === 0)
     )
     .addComponents(
       new ButtonBuilder()
@@ -94,6 +97,7 @@ const generateMusicStatusButtons = (queue) => {
         .setCustomId("music-nextSong")
         .setLabel("⏭")
         .setStyle(ButtonStyle.Primary)
+        .setDisabled(queue.songs.length === 1)
     );
 
   const thirdRow = new ActionRowBuilder()
@@ -102,6 +106,7 @@ const generateMusicStatusButtons = (queue) => {
         .setCustomId("music-decreaseVolume")
         .setLabel("🔉")
         .setStyle(ButtonStyle.Secondary)
+        .setDisabled(queue.volume <= 10)
     )
     .addComponents(
       new ButtonBuilder()
@@ -120,6 +125,7 @@ const generateMusicStatusButtons = (queue) => {
         .setCustomId("music-increaseVolume")
         .setLabel("🔊")
         .setStyle(ButtonStyle.Secondary)
+        .setDisabled(queue.volume >= 90)
     );
 
   return [firstRow, secondRow, thirdRow];
@@ -140,10 +146,10 @@ const generateMusicPlayerStatus = (queue, song) => {
             )}\`/\`${secondsToDuration(song.duration)}\` `,
             `${generateProgressBar(queue.currentTime, song.duration, 35)} `,
             "",
-            `Status: \`${
-              queue.paused ? "Paused" : "Playing"
-            }\` | Queue Duration: \`${queue.formattedCurrentTime}\` / \`${
-              queue.formattedDuration
+            `Status: \`${queue.paused ? "Paused" : "Playing"}\` | Queue: \`${
+              queue.formattedCurrentTime
+            }\` / \`${queue.formattedDuration}\` | Songs: \`1/${
+              queue.songs.length
             }\``,
             `Volume: \`${queue.volume}%\` | Loop: \`${
               queue.repeatMode
@@ -156,11 +162,11 @@ const generateMusicPlayerStatus = (queue, song) => {
             }\``,
           ].join("\n")
         )
-        .setFooter({ text: song.uploader.name })
+        .setFooter({ text: `Channel: ${song.uploader.name}` })
         .setTimestamp(),
     ],
 
-    components: generateMusicStatusButtons(),
+    components: generateMusicStatusButtons(queue),
   };
 };
 

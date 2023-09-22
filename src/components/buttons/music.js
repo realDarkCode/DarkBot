@@ -2,6 +2,7 @@ const { ButtonInteraction, EmbedBuilder } = require("discord.js");
 const {
   isValidMusicInteraction,
   resetPlayer,
+  updateMusicPlayerStatus,
 } = require("../../helpers/music.helper");
 module.exports = {
   data: {
@@ -17,21 +18,18 @@ module.exports = {
     if (!isValid) return;
     const queue = await client.distube.getQueue(guild);
 
-    const SEEK_TIME = 10;
+    const SEEK_TIME = 15;
     const VOLUME_AMOUNT = 10;
     const embed = new EmbedBuilder();
 
     const replyInteraction = async (content) => {
+      updateMusicPlayerStatus(queue);
       return await interaction.reply(content);
     };
 
     switch (buttonInfo[0]) {
       case "seekBackward": {
-        if (queue.currentTime < SEEK_TIME) {
-          client.distube.seek(guild, queue.duration - queue.currentTime);
-        } else {
-          client.distube.seek(guild, queue.currentTime - SEEK_TIME);
-        }
+        client.distube.seek(guild, queue.currentTime - SEEK_TIME);
         return await replyInteraction({
           embeds: [
             embed
@@ -40,6 +38,7 @@ module.exports = {
                 `⏪ Seeked back ${SEEK_TIME} seconds. \nRequested by:<@${user.id}>`
               ),
           ],
+          ephemeral: true,
         });
       }
 
@@ -54,6 +53,7 @@ module.exports = {
                   `▶ Song has been resumed. \nRequest by:<@${user.id}>`
                 ),
             ],
+            ephemeral: true,
           });
         } else {
           client.distube.pause(guild);
@@ -65,6 +65,7 @@ module.exports = {
                   `▶ Song has been paused. \nRequest by:<@${user.id}>`
                 ),
             ],
+            ephemeral: true,
           });
         }
       }
@@ -78,20 +79,11 @@ module.exports = {
                 `⏩ Seeked forward ${SEEK_TIME} seconds. \nRequested by:<@${user.id}>`
               ),
           ],
+          ephemeral: true,
         });
       }
 
       case "prevSong": {
-        if (!queue.previousSongs.length) {
-          return await replyInteraction({
-            embeds: [
-              embed
-                .setColor("Red")
-                .setDescription("⏪ There is no previous song to play."),
-            ],
-            ephemeral: true,
-          });
-        }
         await client.distube.previous(guild);
         return await replyInteraction({
           embeds: [
@@ -117,16 +109,6 @@ module.exports = {
         });
       }
       case "nextSong": {
-        if (queue.songs.length <= 1) {
-          return await replyInteraction({
-            embeds: [
-              embed
-                .setColor("Red")
-                .setDescription("⏩ There is no next song to play."),
-            ],
-            ephemeral: true,
-          });
-        }
         client.distube.skip(guild);
         return await replyInteraction({
           embeds: [
@@ -149,19 +131,10 @@ module.exports = {
                 `🔀 Shuffle is now ${queue.shuffle ? "**on**" : "**off**"}`
               ),
           ],
+          ephemeral: true,
         });
       }
       case "decreaseVolume": {
-        if (queue.volume <= 0 || queue.volume - VOLUME_AMOUNT <= 0) {
-          return await replyInteraction({
-            embeds: [
-              embed
-                .setColor("Red")
-                .setDescription("⏩ Volume is already lower."),
-            ],
-            ephemeral: true,
-          });
-        }
         client.distube.setVolume(guild, queue.volume - VOLUME_AMOUNT);
         return await replyInteraction({
           embeds: [
@@ -173,19 +146,10 @@ module.exports = {
                 }`
               ),
           ],
+          ephemeral: true,
         });
       }
       case "increaseVolume": {
-        if (queue.volume >= 100 || queue.volume + VOLUME_AMOUNT >= 100) {
-          return await replyInteraction({
-            embeds: [
-              embed
-                .setColor("Red")
-                .setDescription("⏩ Volume is already high enough."),
-            ],
-            ephemeral: true,
-          });
-        }
         client.distube.setVolume(guild, queue.volume + VOLUME_AMOUNT);
         return await replyInteraction({
           embeds: [
@@ -195,6 +159,7 @@ module.exports = {
                 `🔊 Volume has been increased to ${queue.volume + 10}`
               ),
           ],
+          ephemeral: true,
         });
       }
       case "toggleAutoplay": {
@@ -207,6 +172,7 @@ module.exports = {
                 `🔁 Autoplay is now ${mode ? "**on**" : "**off**"}`
               ),
           ],
+          ephemeral: true,
         });
       }
       case "toggleLoop": {
@@ -222,6 +188,7 @@ module.exports = {
                 }\`.`
               ),
           ],
+          ephemeral: true,
         });
       }
       case "viewQueue": {
