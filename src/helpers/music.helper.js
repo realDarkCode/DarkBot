@@ -183,13 +183,18 @@ const updateMusicPlayerStatus = async (queue) => {
   await msg.edit(generateMusicPlayerStatus(queue, song));
 };
 
+const clearPlayer = (queue) => {
+  resetPlayer(queue);
+  clearInterval(queue.playerIntervalId);
+};
+
 const resetPlayer = (queue) => {
   queue.client.musicControllerMsgId = null;
-  clearInterval(queue.playerIntervalId);
 };
 module.exports = {
   isValidMusicInteraction,
   generateMusicPlayerStatus,
   updateMusicPlayerStatus,
   resetPlayer,
+  clearPlayer,
 };

@@ -1,6 +1,5 @@
 const { Client, ActivityType } = require("discord.js");
 const { timestampToRelativeTime } = require("../helpers/convert");
-const { resetPlayer } = require("../helpers/music.helper");
 /**
  *
  * @param {Client} client
@@ -33,32 +32,42 @@ const activities = [
   },
 ];
 
+const getRunningTime = (createdAt) => {
+  const d = new Date();
+  d.setMilliseconds(d.getMilliseconds() - createdAt);
+  return timestampToRelativeTime(Date.now(), d);
+};
+
+const getRandomActivity = () => {
+  return activities[Math.floor(Math.random() * activities.length)];
+};
+
 async function updateRuntimeStatus(client) {
-  resetPlayer({ client });
   async function _() {
-    const d = new Date();
-    d.setMilliseconds(d.getMilliseconds() - client.uptime);
     await client.user.setPresence({
       status: "online",
       activities: [
         {
-          ...activities[Math.floor(Math.random() * activities.length)],
-          state: `for ${timestampToRelativeTime(Date.now(), d)}`,
+          ...getRandomActivity(),
+          state: `for ${getRunningTime(client.uptime)}`,
         },
       ],
     });
   }
 
   _();
+  if (client.activityIntervalId) return;
   client.activityIntervalId = setInterval(async () => {
-    _();
-  }, 1000 * 60 * 123);
+    await _();
+  }, 1000 * 60 * 45);
 }
 
 async function updateMusicStatus(queue) {
-  state = `
-      1/${queue.songs.length} - ${queue.formattedDuration} - ${queue.songs[0].name}
-      `;
+  clearInterval(queue.client.activityIntervalId);
+  const song = queue.songs[0];
+  let state = `${queue.previousSongs.length + 1}/${
+    queue.songs.length + queue.previousSongs.length
+  } - ${song.name.slice(0, 25)}. ⏲${getRunningTime(queue.client.uptime)}`;
 
   await queue.client.user.setPresence({
     status: "online",

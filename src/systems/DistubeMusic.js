@@ -8,7 +8,9 @@ const {
   generateMusicPlayerStatus,
   updateMusicPlayerStatus,
   resetPlayer,
+  clearPlayer,
 } = require("../helpers/music.helper");
+
 /**
  *
  * ⏪⏯⏹️⏩
@@ -22,23 +24,28 @@ const handleDistubeEvent = async (client) => {
       queue.autoplay = false;
       queue.volume = 80;
       queue.shuffle = false;
-      clearInterval(queue.client.activityIntervalId);
-      resetPlayer(queue);
+      clearPlayer(queue);
+      queue.playerIntervalId = setInterval(async () => {
+        await updateMusicPlayerStatus(queue);
+      }, 1000 * 2);
       updateMusicStatus(queue);
-
-      queue.playerIntervalId = setInterval(() => {
-        updateMusicPlayerStatus(queue);
-      }, 1000 * 5);
+    })
+    .on("deleteQueue", (queue) => {
+      clearPlayer(queue);
+      updateRuntimeStatus(queue.client);
     })
     .on("playSong", async (queue, song) => {
-      updateMusicStatus(queue);
       const msg = await queue.textChannel.send(
         generateMusicPlayerStatus(queue, song)
       );
       client.musicControllerMsgId = msg.id;
+      updateMusicStatus(queue);
+    })
+    .on("finishSong", (queue) => {
+      resetPlayer(queue);
     })
     .on("addSong", (queue, song) => {
-      queue.client.musicControllerMsgId = null;
+      updateMusicStatus(queue);
       queue.textChannel.send({
         embeds: [
           new EmbedBuilder()
@@ -56,10 +63,9 @@ const handleDistubeEvent = async (client) => {
           new EmbedBuilder()
             .setColor("Green")
             .setDescription(
-              ` Added \`${playlist.name}\`🎶 playlist (${
-                playlist.songs.length
-              } songs) to queue\n${status(queue)}`
-            ),
+              ` Added \`${playlist.name}\`🎶 playlist (${playlist.songs.length} songs) to queue`
+            )
+            .setThumbnail(playlist.thumbnail),
         ],
       });
     })
@@ -74,6 +80,7 @@ const handleDistubeEvent = async (client) => {
         ],
       });
       console.error(e);
+      updateRuntimeStatus(channel.client);
     })
     .on("empty", (queue) => {
       queue.textChannel.send({
@@ -86,6 +93,7 @@ const handleDistubeEvent = async (client) => {
         ],
       });
       updateRuntimeStatus(queue.client);
+      clearPlayer(queue);
     })
     .on("searchNoResult", (message, query) =>
       message.channel.send({
@@ -103,9 +111,11 @@ const handleDistubeEvent = async (client) => {
         ],
       });
       updateRuntimeStatus(queue.client);
+      clearPlayer(queue);
     })
     .on("disconnect", (queue) => {
       updateRuntimeStatus(queue.client);
+      clearPlayer(queue);
     });
 };
 

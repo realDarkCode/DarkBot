@@ -1,7 +1,7 @@
 const { ButtonInteraction, EmbedBuilder } = require("discord.js");
 const {
   isValidMusicInteraction,
-  resetPlayer,
+  clearPlayer,
   updateMusicPlayerStatus,
 } = require("../../helpers/music.helper");
 module.exports = {
@@ -18,21 +18,23 @@ module.exports = {
     if (!isValid) return;
     const msgId = interaction.message.id;
     if (msgId !== interaction.client.musicControllerMsgId)
-      return interaction.reply({
+      return await interaction.reply({
         content: "This is outdated please use the latest message button.",
-        ephemeral: true,
       });
 
     const queue = await client.distube.getQueue(guild);
 
     const SEEK_TIME = 15;
     const VOLUME_AMOUNT = 10;
+
     const embed = new EmbedBuilder();
 
     const replyInteraction = async (content) => {
-      updateMusicPlayerStatus(queue);
-      return await interaction.reply(content);
+      await updateMusicPlayerStatus(queue);
+      return await interaction.editReply(content);
     };
+
+    await interaction.deferReply();
 
     switch (buttonInfo[0]) {
       case "seekBackward": {
@@ -45,7 +47,6 @@ module.exports = {
                 `⏪ Seeked back ${SEEK_TIME} seconds. \nRequested by:<@${user.id}>`
               ),
           ],
-          ephemeral: true,
         });
       }
 
@@ -60,7 +61,6 @@ module.exports = {
                   `▶ Song has been resumed. \nRequest by:<@${user.id}>`
                 ),
             ],
-            ephemeral: true,
           });
         } else {
           client.distube.pause(guild);
@@ -72,7 +72,6 @@ module.exports = {
                   `▶ Song has been paused. \nRequest by:<@${user.id}>`
                 ),
             ],
-            ephemeral: true,
           });
         }
       }
@@ -86,7 +85,6 @@ module.exports = {
                 `⏩ Seeked forward ${SEEK_TIME} seconds. \nRequested by:<@${user.id}>`
               ),
           ],
-          ephemeral: true,
         });
       }
 
@@ -104,7 +102,7 @@ module.exports = {
       }
       case "stop": {
         client.distube.stop(guild);
-        resetPlayer(queue);
+        clearPlayer(queue);
         return await replyInteraction({
           embeds: [
             embed
@@ -128,17 +126,16 @@ module.exports = {
         });
       }
       case "toggleShuffle": {
-        await queue.shuffle(guild);
+        queue.shuffle = !queue.shuffle;
 
         return await replyInteraction({
           embeds: [
             embed
               .setColor("Yellow")
               .setDescription(
-                `🔀 Shuffle is now ${queue.shuffle ? "**on**" : "**off**"}`
+                `🔀 Shuffle mode set to \`${queue.shuffle}\`  Requested by:<@${user.id}>`
               ),
           ],
-          ephemeral: true,
         });
       }
       case "decreaseVolume": {
@@ -153,7 +150,6 @@ module.exports = {
                 }`
               ),
           ],
-          ephemeral: true,
         });
       }
       case "increaseVolume": {
@@ -163,10 +159,11 @@ module.exports = {
             embed
               .setColor("Yellow")
               .setDescription(
-                `🔊 Volume has been increased to ${queue.volume + 10}`
+                `🔊 Volume has been increased to ${
+                  queue.volume + VOLUME_AMOUNT
+                }`
               ),
           ],
-          ephemeral: true,
         });
       }
       case "toggleAutoplay": {
@@ -179,12 +176,10 @@ module.exports = {
                 `🔁 Autoplay is now ${mode ? "**on**" : "**off**"}`
               ),
           ],
-          ephemeral: true,
         });
       }
       case "toggleLoop": {
         let repeatMode = await client.distube.setRepeatMode(queue);
-
         return await replyInteraction({
           embeds: [
             embed
@@ -195,7 +190,6 @@ module.exports = {
                 }\`.`
               ),
           ],
-          ephemeral: true,
         });
       }
       case "viewQueue": {
