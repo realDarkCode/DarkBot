@@ -97,7 +97,7 @@ const generateMusicStatusButtons = (queue) => {
         .setCustomId("music-nextSong")
         .setLabel("⏭")
         .setStyle(ButtonStyle.Primary)
-        .setDisabled(queue.songs.length === 1)
+        .setDisabled(queue.autoplay ? false : queue.songs.length === 1)
     );
 
   const thirdRow = new ActionRowBuilder()
