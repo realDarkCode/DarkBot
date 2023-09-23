@@ -27,7 +27,7 @@ const handleDistubeEvent = async (client) => {
       clearPlayer(queue);
       queue.playerIntervalId = setInterval(async () => {
         await updateMusicPlayerStatus(queue);
-      }, 1000 * 2);
+      }, 1000 * 1);
       updateMusicStatus(queue);
     })
     .on("deleteQueue", (queue) => {
