@@ -1,4 +1,9 @@
-const { loadCommands, loadComponents, loadSystems } = require("../../handlers");
+const {
+  loadCommands,
+  loadComponents,
+  loadSystems,
+  loadSchedules,
+} = require("../../handlers");
 const { Client, ActivityType } = require("discord.js");
 const { updateRuntimeStatus } = require("../../services/botPresence.discord");
 
@@ -17,5 +22,6 @@ module.exports = {
     loadCommands(client);
     loadComponents(client);
     loadSystems(client);
+    loadSchedules(client);
   },
 };
