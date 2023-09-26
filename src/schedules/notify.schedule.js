@@ -16,9 +16,11 @@ module.exports = {
 
       await Promise.all(
         toNotifies.map(async (notify) => {
-          const user =
-            (await client.users.fetch(notify.recipientID)) ||
-            (await client.users.fetch(notify.userID));
+          let user;
+          if (notify.recipientID) {
+            user = await client.users.fetch(notify.recipientID);
+          }
+          if (!user) user = await client.users.fetch(notify.userID);
 
           if (!user) {
             return console.log(
@@ -34,9 +36,11 @@ module.exports = {
             .setColor("Blue")
             .setDescription(notify.message)
             .setFooter({
-              text: `Notify from ${
+              text: `Message from ${
                 notify.userTag
-              } at ${notify.time.toLocaleTimeString()}`,
+              } at ${notify.time.toLocaleTimeString("en-US", {
+                timeZone: "Asia/Dhaka",
+              })}`,
             });
 
           await user.send({ embeds: [embed] });
