@@ -56,13 +56,11 @@ module.exports = {
         ephemeral: true,
       });
 
-    const guildID = interaction.guild.id;
     const notify = await notifyService.createNotification({
       userID: interaction.user.id,
       userTag: interaction.user.tag,
       recipientID,
       message,
-      guildID,
       time: notifyTime,
     });
 

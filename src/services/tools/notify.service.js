@@ -10,7 +10,6 @@ const getNotificationToSend = async () => {
     return {
       id: notify._id,
       userID: notify.userID,
-      guildID: notify.guildID,
       userTag: notify.userTag,
       recipientID: notify.recipientID,
       message: notify.message,
@@ -27,7 +26,6 @@ const updateNotifyStatusToTrue = async (ids) => {
 const createNotification = async ({
   userID,
   userTag,
-  guildID,
   recipientID,
   message,
   time,
@@ -39,7 +37,6 @@ const createNotification = async ({
     userID,
     userTag,
     recipientID,
-    guildID,
     message,
     time,
   });

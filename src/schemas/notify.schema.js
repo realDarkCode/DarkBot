@@ -10,7 +10,6 @@ module.exports = model(
     {
       userID: strReq,
       userTag: String,
-      guildID: strReq,
       recipientID: {
         type: String,
       },
