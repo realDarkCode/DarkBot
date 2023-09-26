@@ -2,7 +2,7 @@ const { Client, EmbedBuilder } = require("discord.js");
 const notifyService = require("../services/tools/notify.service");
 module.exports = {
   name: "notify-schedule",
-  frequency: "*/5 * * * * *",
+  frequency: "*/5 * * * *",
   /**
    *
    * @param {Client} client
@@ -17,10 +17,15 @@ module.exports = {
       await Promise.all(
         toNotifies.map(async (notify) => {
           const user =
-            client.users.cache.get(notify.recipientID) ||
-            client.users.cache.get(notify.userID);
+            (await client.users.fetch(notify.recipientID)) ||
+            (await client.users.fetch(notify.userID));
 
-          if (!user) return;
+          if (!user) {
+            return console.log(
+              "User not found",
+              notify.recipientID || notify.userID
+            );
+          }
 
           await user.createDM();
 

@@ -43,12 +43,19 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const embed = new EmbedBuilder().setTitle("notify");
+    const embed = new EmbedBuilder().setTitle("Notify");
 
     const time = interaction.options.getNumber("time");
     const message = interaction.options.getString("message");
     const notifyTime = new Date(Date.now() + time * 60000);
     const recipientID = interaction.options.getUser("recipient")?.id;
+
+    if (recipientID === interaction.client.user.id)
+      return interaction.reply({
+        content: "I can't send a notification to myself",
+        ephemeral: true,
+      });
+
     const guildID = interaction.guild.id;
     const notify = await notifyService.createNotification({
       userID: interaction.user.id,
@@ -67,6 +74,6 @@ module.exports = {
         )}:R>.`
       )
       .setFooter({ text: `notify ID: ${notify._id}` });
-    await interaction.reply({ embeds: [embed] });
+    await interaction.reply({ embeds: [embed], ephemeral: true });
   },
 };
