@@ -41,5 +41,23 @@ module.exports = {
             .setDescription("set  bot default logging channel")
             .addChannelTypes(ChannelType.GuildText)
         )
+    )
+    .addSubcommand((option) =>
+      option
+        .setName("monitor")
+        .setDescription("Config Monitor settings")
+        .addChannelOption((option) =>
+          option
+            .setName("announce_channel")
+            .setDescription(
+              "set  bot default announce channel related to monitor"
+            )
+            .addChannelTypes(ChannelType.GuildText)
+        )
+        .addRoleOption((option) =>
+          option
+            .setName("admin_role")
+            .setDescription("set the role which can use monitor commands")
+        )
     ),
 };

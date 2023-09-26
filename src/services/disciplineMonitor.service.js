@@ -80,7 +80,27 @@ const getDataOfWeeklyActiveMonitors = async ({ limit = 10, query }) => {
   };
 };
 
-const getCurrentWeekBirthdayMonitors = async () => {
+const getCurrentBirthdayMonitors = async (dateType = month) => {
+  let filter = [
+    {
+      $week: "$date_of_birth",
+    },
+    {
+      $week: new Date(),
+    },
+  ];
+
+  if (dateType === "month") {
+    filter = [
+      {
+        $month: "$date_of_birth",
+      },
+      {
+        $month: new Date(),
+      },
+    ];
+  }
+
   return await DisciplineMonitor.aggregate([
     {
       $addFields: {
@@ -102,17 +122,11 @@ const getCurrentWeekBirthdayMonitors = async () => {
     {
       $match: {
         $expr: {
-          $eq: [
-            {
-              $week: "$date_of_birth",
-            },
-            {
-              $week: new Date(),
-            },
-          ],
+          $eq: [...filter],
         },
       },
     },
+    { $sort: { date_of_birth: -1 } },
   ]);
 };
 module.exports = {
@@ -122,4 +136,5 @@ module.exports = {
   findMonitorById,
   getMonitorListWithPoints,
   getDataOfWeeklyActiveMonitors,
+  getCurrentBirthdayMonitors,
 };

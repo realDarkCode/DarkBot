@@ -251,5 +251,16 @@ module.exports = {
             .setDescription("Select the status")
             .addChoices(...convertToChoices(["active", "inactive"]))
         )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("birthday")
+        .setDescription("list of birthdays in current week/month")
+        .addStringOption((option) =>
+          option
+            .setName("date_type")
+            .setDescription("Select the date type")
+            .addChoices(...convertToChoices(["week", "month"]))
+        )
     ),
 };

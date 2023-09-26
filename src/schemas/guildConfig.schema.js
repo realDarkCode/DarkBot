@@ -14,6 +14,12 @@ const guildConfigSchema = new Schema(
     botLogChannelName: String,
     memberRoleId: String,
     botRoleId: String,
+    monitor: {
+      announceChannelId: String,
+      announceChannelName: String,
+      adminRoleId: String,
+      adminRoleName: String,
+    },
   },
   {
     timestamps: true,

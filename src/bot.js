@@ -5,7 +5,8 @@ const {
   Partials,
   Collection,
 } = require("discord.js");
-
+// load guild config
+const { loadGuildConfig } = require("./functions/loadConfig");
 // Initialize the client
 const { Guilds, GuildMembers, GuildMessages, GuildVoiceStates } =
   GatewayIntentBits;
@@ -39,6 +40,8 @@ connect(process.env.DATABASE_URI, {
 })
   .then((connection) => {
     console.log(`Connected to database: ${connection.connection.name}`);
+
+    loadGuildConfig(client);
   })
   .catch((err) => {
     console.log(err);
@@ -49,10 +52,5 @@ connect(process.env.DATABASE_URI, {
 // loading the handlers
 const { loadEvents } = require("./handlers");
 loadEvents(client);
-
-// load guild config
-const { loadGuildConfig } = require("./functions/loadConfig");
-
-loadGuildConfig(client);
 
 module.exports = client;
