@@ -60,30 +60,60 @@ const getMonitorListWithPoints = async (query = { class: "seven" }) => {
   return monitorListWithPoint;
 };
 
-const getDataOfWeeklyActiveMonitors = async (cls, gender) => {
-  const weeklyStar =
-    await disciplineMonitorPointHistoryService.getWeeklyActiveMonitors();
+const getDataOfWeeklyActiveMonitors = async ({ limit = 10, query }) => {
+  const activeList =
+    await disciplineMonitorPointHistoryService.getWeeklyMonitors({
+      limit,
+      asc: true,
+      query,
+    });
 
-  const weeklyStarWithData = await Promise.all(
-    weeklyStar.map(async (monitor) => {
-      const _monitor = await DisciplineMonitor.findById(monitor._id);
+  const inactiveList =
+    await disciplineMonitorPointHistoryService.getWeeklyMonitors({
+      limit,
+      asc: false,
+      query,
+    });
+  return {
+    activeList,
+    inactiveList,
+  };
+};
 
-      return {
-        name: _monitor.name,
-        school_id: _monitor.school_id,
-        class: _monitor.class,
-        gender: _monitor.gender,
-        section: _monitor.section,
-        totalPoint: monitor.totalPoint,
-      };
-    })
-  );
-  return weeklyStarWithData.filter((monitor) => {
-    if (cls && monitor.class !== cls) return false;
-    if (gender && monitor.gender !== gender) return false;
-
-    return true;
-  });
+const getCurrentWeekBirthdayMonitors = async () => {
+  return await DisciplineMonitor.aggregate([
+    {
+      $addFields: {
+        date_of_birth: {
+          $dateFromParts: {
+            year: {
+              $year: new Date(),
+            },
+            month: {
+              $month: "$date_of_birth",
+            },
+            day: {
+              $dayOfMonth: "$date_of_birth",
+            },
+          },
+        },
+      },
+    },
+    {
+      $match: {
+        $expr: {
+          $eq: [
+            {
+              $week: "$date_of_birth",
+            },
+            {
+              $week: new Date(),
+            },
+          ],
+        },
+      },
+    },
+  ]);
 };
 module.exports = {
   addMonitor,

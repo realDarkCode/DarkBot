@@ -245,5 +245,11 @@ module.exports = {
             .setDescription("blood group of monitor")
             .addChoices(...convertToChoices(bloodGroupList))
         )
+        .addStringOption((option) =>
+          option
+            .setName("status")
+            .setDescription("Select the status")
+            .addChoices(...convertToChoices(["active", "inactive"]))
+        )
     ),
 };

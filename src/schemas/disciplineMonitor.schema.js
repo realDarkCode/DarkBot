@@ -48,7 +48,7 @@ const disciplineMonitorSchema = new Schema(
       enum: [...bloodGroupList],
     },
     date_of_birth: {
-      ...defaultOption,
+      type: Date,
     },
   },
   {

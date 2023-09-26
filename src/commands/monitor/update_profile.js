@@ -67,7 +67,11 @@ module.exports = {
               }`,
               `**Date of Birth**: ${
                 updatedMonitor.date_of_birth
-                  ? updatedMonitor.date_of_birth
+                  ? `<t:${Math.round(
+                      new Date(updatedMonitor.date_of_birth).setFullYear(
+                        new Date().getFullYear()
+                      ) / 1000
+                    )}:R>`
                   : "N/A"
               }`,
               `**Blood Group**: ${

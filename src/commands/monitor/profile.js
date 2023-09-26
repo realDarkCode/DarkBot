@@ -67,7 +67,13 @@ module.exports = {
             monitor.house ? capitalizeFirstLetter(monitor.house) : "N/A"
           }`,
           `**Date of Birth**: ${
-            monitor.date_of_birth ? monitor.date_of_birth : "N/A"
+            monitor.date_of_birth
+              ? `<t:${Math.round(
+                  new Date(monitor.date_of_birth).setFullYear(
+                    new Date().getFullYear()
+                  ) / 1000
+                )}:R>`
+              : "N/A"
           }`,
           `**Blood Group**: ${
             monitor.blood_group ? monitor.blood_group.toUpperCase() : "N/A"

@@ -45,7 +45,7 @@ const createBulkHistory = async (
   return DisciplineMonitorPointHistory.create(monitorPointHistoryWrite);
 };
 
-const getWeeklyActiveMonitors = async () => {
+const getWeeklyMonitors = async ({ limit, asc, query }) => {
   const lastSunday = new Date();
   const today = new Date();
   lastSunday.setDate(today.getDate() - today.getDay() - 1);
@@ -65,8 +65,25 @@ const getWeeklyActiveMonitors = async () => {
       },
     },
     {
-      $sort: { totalPoint: -1 },
+      $lookup: {
+        from: "disciplinemonitors",
+        localField: "_id",
+        foreignField: "_id",
+        as: "monitor",
+      },
     },
+    { $unwind: "$monitor" },
+    {
+      $replaceRoot: {
+        newRoot: { $mergeObjects: ["$monitor", "$$ROOT"] },
+      },
+    },
+    { $project: { monitor: 0 } },
+    { $match: { ...query } },
+    {
+      $sort: { totalPoint: asc ? -1 : 1 },
+    },
+    { $limit: limit },
   ]);
   return mostActiveMonitor;
 };
@@ -88,5 +105,5 @@ module.exports = {
   createBulkHistory,
   getMonitorPointHistory,
   findHistoryById,
-  getWeeklyActiveMonitors,
+  getWeeklyMonitors,
 };
