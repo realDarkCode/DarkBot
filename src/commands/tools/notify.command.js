@@ -15,16 +15,19 @@ module.exports = {
         .setDescription("set the time for the notify in minutes")
         .setRequired(true)
         .addChoices(
-          { name: "5min", value: 5 },
-          { name: "20min", value: 20 },
-          { name: "30min", value: 30 },
-          { name: "45min", value: 45 },
-          { name: "1hour", value: 30 },
-          { name: "1hour 30 minutes", value: 90 },
-          { name: "2hours", value: 120 },
-          { name: "3hours", value: 180 },
-          { name: "4hours", value: 240 },
-          { name: "6hours", value: 300 }
+          { name: "5 min", value: 5 },
+          { name: "20 min", value: 20 },
+          { name: "30 min", value: 30 },
+          { name: "45 min", value: 45 },
+          { name: "1 hour", value: 30 },
+          { name: "1 hour 30 minutes", value: 90 },
+          { name: "2 hours", value: 2 * 60 },
+          { name: "3 hours", value: 3 * 60 },
+          { name: "4 hours", value: 4 * 60 },
+          { name: "6 hours", value: 6 * 60 },
+          { name: "12 hours", value: 12 * 60 },
+          { name: "1 Days", value: 24 * 60 },
+          { name: "3 Days", value: 3 * 24 * 60 }
         )
     )
     .addStringOption((option) =>
