@@ -4,7 +4,7 @@ const { capitalizeFirstLetter } = require("../helpers/convert");
 const disciplineMonitorService = require("../services/disciplineMonitor.service");
 module.exports = {
   name: "monitor-birthday",
-  frequency: "* 0 * * Friday",
+  frequency: "* 0 * * 5",
   /**
    *
    * @param {Client} client
