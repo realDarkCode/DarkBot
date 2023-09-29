@@ -8,11 +8,22 @@ const {
 // load guild config
 const { loadGuildConfig } = require("./functions/loadConfig");
 // Initialize the client
-const { Guilds, GuildMembers, GuildMessages, GuildVoiceStates } =
-  GatewayIntentBits;
+const {
+  Guilds,
+  GuildMembers,
+  GuildMessages,
+  GuildVoiceStates,
+  GuildPresences,
+} = GatewayIntentBits;
 const { Message, ThreadMember } = Partials;
 const client = new Client({
-  intents: [Guilds, GuildMembers, GuildMessages, GuildVoiceStates],
+  intents: [
+    Guilds,
+    GuildMembers,
+    GuildMessages,
+    GuildVoiceStates,
+    GuildPresences,
+  ],
   partials: [Message, ThreadMember],
 });
 

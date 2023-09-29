@@ -63,6 +63,19 @@ const secondsToDuration = (seconds) => {
   return `${minutes}:${formattedSeconds}`;
 };
 
+const getPresenceStatusEmoji = (status) => {
+  switch (status) {
+    case "online":
+      return "🟢";
+
+    case "idle":
+      return "🟡";
+    case "offline":
+      return "⚫";
+    default:
+      return status;
+  }
+};
 module.exports = {
   convertToChoices,
   objKeyListUpperCase,
@@ -71,4 +84,5 @@ module.exports = {
   timestampToRelativeTime,
   generateProgressBar,
   secondsToDuration,
+  getPresenceStatusEmoji,
 };

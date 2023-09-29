@@ -34,13 +34,13 @@ module.exports = {
           const embed = new EmbedBuilder()
             .setTitle("Notification")
             .setColor("Blue")
-            .setDescription(notify.message)
-            .setFooter({
-              text: `Message from ${
+            .setDescription(
+              (notify.message += `\nMessage from ${
                 notify.userTag
-              } at ${notify.time.toLocaleTimeString("en-US", {
-                timeZone: "Asia/Dhaka",
-              })}`,
+              } scheduled <t:${Math.round(notify.time / 1000)}:R>`)
+            )
+            .setFooter({
+              text: "This message is from the past",
             });
 
           await user.send({ embeds: [embed] });
