@@ -39,9 +39,10 @@ module.exports = {
             .setColor("Red")
             .setTitle("Monitor Attendance Failed")
             .setDescription(
-              "You must specify class if you want to use 3 digit ids."
+              "You must specify `class` if you want to use 3 digit ids."
             ),
         ],
+        ephemeral: true,
       });
     }
     const failedAttendanceIds =

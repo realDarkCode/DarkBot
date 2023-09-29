@@ -42,9 +42,10 @@ module.exports = {
             .setColor("Red")
             .setTitle("Monitor bulk Point Failed")
             .setDescription(
-              "You must specify class if you want to use 3 digit ids."
+              "You must specify `class` if you want to use 3 digit ids."
             ),
         ],
+        ephemeral: true,
       });
     }
 
@@ -54,8 +55,11 @@ module.exports = {
           embed
             .setColor("Red")
             .setTitle("Invalid Point")
-            .setDescription("You can only specify point in SPECIAL point type"),
+            .setDescription(
+              "You can only specify **points** in `SPECIAL` point type"
+            ),
         ],
+        ephemeral: true,
       });
     }
 
@@ -66,8 +70,11 @@ module.exports = {
             embed
               .setColor("Red")
               .setTitle("Invalid Point")
-              .setDescription("Specify a valid `point` in SPECIAL point type"),
+              .setDescription(
+                "Specify a valid **point** in `SPECIAL` point type"
+              ),
           ],
+          ephemeral: true,
         });
       } else if (!reason) {
         return interaction.reply({
@@ -75,8 +82,11 @@ module.exports = {
             embed
               .setColor("Red")
               .setTitle("Invalid Reason")
-              .setDescription("Specify a valid `reason` in SPECIAL point type"),
+              .setDescription(
+                "Specify a valid **reason** in `SPECIAL` point type"
+              ),
           ],
+          ephemeral: true,
         });
       }
     }
