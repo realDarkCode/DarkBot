@@ -4,7 +4,7 @@ const { capitalizeFirstLetter } = require("../helpers/convert");
 const disciplineMonitorService = require("../services/disciplineMonitor.service");
 module.exports = {
   name: "monitor-birthday",
-  frequency: "* 0 * * 5",
+  frequency: "1 0 * * 0",
   /**
    *
    * @param {Client} client
@@ -16,7 +16,7 @@ module.exports = {
       if (!birthdays) return;
       const embed = new EmbedBuilder()
         .setColor("Purple")
-        .setTitle(`Birthday Monitor List this week`)
+        .setTitle(`Monitor's Birthday this week`)
         .setDescription(
           birthdays
             .map((monitor, index, arr) => {
