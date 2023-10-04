@@ -14,6 +14,7 @@ const getNotificationToSend = async () => {
       recipientID: notify.recipientID,
       message: notify.message,
       time: notify.time,
+      createdAt: notify.createdAt,
     };
   });
 
