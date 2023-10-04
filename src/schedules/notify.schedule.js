@@ -37,10 +37,12 @@ module.exports = {
             .setDescription(
               (notify.message += `\nMessage from ${
                 notify.userTag
-              } scheduled <t:${Math.round(notify.time / 1000)}:R>`)
+              } scheduled <t:${Math.round(
+                new Date(notify.createdAt).getTime() / 1000
+              )}:R>`)
             )
             .setFooter({
-              text: "This message is from the past",
+              text: "This message is from the past. /notify",
             });
 
           await user.send({ embeds: [embed] });
