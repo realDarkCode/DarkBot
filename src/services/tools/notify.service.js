@@ -7,15 +7,7 @@ const getNotificationToSend = async () => {
   });
 
   const notifies = toNotifies.map((notify) => {
-    return {
-      id: notify._id,
-      userID: notify.userID,
-      userTag: notify.userTag,
-      recipientID: notify.recipientID,
-      message: notify.message,
-      time: notify.time,
-      createdAt: notify.createdAt,
-    };
+    return notify.toObject();
   });
 
   return notifies;
@@ -29,6 +21,7 @@ const createNotification = async ({
   userTag,
   recipientID,
   message,
+  image,
   time,
 }) => {
   if (time < new Date()) {
@@ -39,6 +32,7 @@ const createNotification = async ({
     userTag,
     recipientID,
     message,
+    image,
     time,
   });
 

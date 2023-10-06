@@ -16,7 +16,7 @@ module.exports = {
         .setRequired(true)
         .addChoices(
           { name: "5 min", value: 5 },
-          { name: "20 min", value: 20 },
+          { name: "15 min", value: 15 },
           { name: "30 min", value: 30 },
           { name: "45 min", value: 45 },
           { name: "1 hour", value: 30 },
@@ -33,13 +33,21 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName("message")
-        .setDescription("set the message for the notify")
-        .setMaxLength(100)
+        .setDescription("set the message for the notify [max 450 characters]")
+        .setMaxLength(450)
         .setMinLength(3)
         .setRequired(true)
     )
     .addUserOption((option) =>
       option.setName("recipient").setDescription("set the user for the notify")
+    )
+    .addStringOption((option) =>
+      option
+        .setName("image")
+        .setDescription(
+          "Give the exact image link which will be attached to the message"
+        )
+        .setMaxLength(150)
     ),
   /**
    *
@@ -50,8 +58,11 @@ module.exports = {
 
     const time = interaction.options.getNumber("time");
     const message = interaction.options.getString("message");
-    const notifyTime = new Date(Date.now() + time * 60000);
+    let notifyTime = new Date();
+
+    notifyTime = new Date(notifyTime.setSeconds(0) + time * 60000);
     const recipientID = interaction.options.getUser("recipient")?.id;
+    const image = interaction.options.getString("image");
 
     if (recipientID === interaction.client.user.id)
       return interaction.reply({
@@ -64,6 +75,7 @@ module.exports = {
       userTag: interaction.user.tag,
       recipientID,
       message,
+      image,
       time: notifyTime,
     });
 

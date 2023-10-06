@@ -17,6 +17,9 @@ module.exports = model(
         type: String,
         required: true,
       },
+      image: {
+        type: String,
+      },
       time: {
         type: Date,
         required: true,
