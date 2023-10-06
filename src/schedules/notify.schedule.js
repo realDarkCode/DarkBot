@@ -2,7 +2,7 @@ const { Client, EmbedBuilder } = require("discord.js");
 const notifyService = require("../services/tools/notify.service");
 module.exports = {
   name: "notify-schedule",
-  frequency: "*/5 * * * *",
+  frequency: "15 */5 * * * *",
   /**
    *
    * @param {Client} client
@@ -34,19 +34,17 @@ module.exports = {
           const embed = new EmbedBuilder()
             .setTitle("Notification")
             .setColor("Blue")
-            .setDescription(
-              (notify.message += `\nMessage from ${
-                notify.userTag
-              } scheduled <t:${Math.round(
-                new Date(notify.createdAt).getTime() / 1000
-              )}:R>`)
-            )
+            .setDescription(notify.message)
             .setFooter({
-              text: "This message is from the past. /notify",
+              text: notify.recipientID
+                ? `This message was scheduled from ${notify.userTag} || /notify`
+                : "This message is from your past self || /notify",
             });
 
+          if (notify.image) embed.setImage(notify.image);
+
           await user.send({ embeds: [embed] });
-          sendId.push(notify.id);
+          sendId.push(notify._id);
         })
       );
 
