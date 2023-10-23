@@ -131,23 +131,43 @@ const generateMusicStatusButtons = (queue) => {
   return [firstRow, secondRow, thirdRow];
 };
 
-const generateMusicPlayerStatus = (queue, song) => {
+const generateMusicPlayerStatus = (queue, song, completed = false) => {
   return {
     embeds: [
       new EmbedBuilder()
-        .setColor("DarkPurple")
+        .setColor(completed ? "Grey" : "DarkPurple")
         .setThumbnail(song.thumbnail)
         .setDescription(
           [
-            `**Playing:** \`${song.name}\` - \`${song.formattedDuration}\` `,
+            `**${completed ? "Played" : "Playing"}:** \`${song.name}\` - \`${
+              song.formattedDuration
+            }\` `,
             `**Requested by: **${song.user} `,
-            `**Duration:** \`${secondsToDuration(
-              queue.currentTime
-            )}\`/\`${secondsToDuration(song.duration)}\` `,
-            `${generateProgressBar(queue.currentTime, song.duration, 35)} `,
+            `**Duration:** ${
+              completed
+                ? `\`${secondsToDuration(
+                    song.duration
+                  )}\`/\`${secondsToDuration(song.duration)}\``
+                : `\`${secondsToDuration(
+                    queue.currentTime
+                  )}\`/\`${secondsToDuration(song.duration)}\``
+            }`,
+            `${
+              completed
+                ? `${generateProgressBar(song.duration, song.duration, 35)} `
+                : `${generateProgressBar(
+                    queue.currentTime,
+                    song.duration,
+                    35
+                  )} `
+            }`,
             "",
-            `Status: \`${queue.paused ? "Paused" : "Playing"}\` | Queue: \`${
-              queue.formattedCurrentTime
+            `Status: \`${
+              completed ? `Completed` : queue.paused ? "Paused" : "Playing"
+            }\` | Queue: \`${
+              completed
+                ? secondsToDuration(song.duration)
+                : queue.formattedCurrentTime
             }\` / \`${queue.formattedDuration}\` | Songs: \`${
               queue.previousSongs.length + 1
             }/${queue.songs.length + queue.previousSongs.length}\``,
@@ -166,11 +186,11 @@ const generateMusicPlayerStatus = (queue, song) => {
         .setTimestamp(),
     ],
 
-    components: generateMusicStatusButtons(queue),
+    components: completed ? [] : generateMusicStatusButtons(queue),
   };
 };
 
-const updateMusicPlayerStatus = async (queue) => {
+const updateMusicPlayerStatus = async (queue, completed) => {
   if (!queue.client.musicControllerMsgId) return;
   const msg = await queue?.textChannel?.messages.cache.get(
     queue.client.musicControllerMsgId
@@ -180,7 +200,8 @@ const updateMusicPlayerStatus = async (queue) => {
 
   const song = queue.songs[0];
   if (!song) return;
-  await msg.edit(generateMusicPlayerStatus(queue, song));
+  if (completed) resetPlayer(queue);
+  await msg.edit(generateMusicPlayerStatus(queue, song, completed));
 };
 
 const clearPlayer = (queue) => {
