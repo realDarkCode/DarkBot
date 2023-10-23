@@ -11,6 +11,8 @@ const {
   clearPlayer,
 } = require("../helpers/music.helper");
 
+const { updateMusicCount } = require("../services/music/musicCount.service");
+
 /**
  *
  * ⏪⏯⏹️⏩
@@ -39,10 +41,19 @@ const handleDistubeEvent = async (client) => {
         generateMusicPlayerStatus(queue, song)
       );
       client.musicControllerMsgId = msg.id;
+
+      updateMusicCount({
+        userId: song.member.id,
+        userName: song.member.displayName,
+        guildId: song.member.guild.id,
+        songId: song.id,
+        name: song.name,
+        link: song.streamURL,
+      });
       updateMusicStatus(queue);
     })
-    .on("finishSong", (queue) => {
-      resetPlayer(queue);
+    .on("finishSong", async (queue) => {
+      await updateMusicPlayerStatus(queue, true);
     })
     .on("addSong", (queue, song) => {
       updateMusicStatus(queue);

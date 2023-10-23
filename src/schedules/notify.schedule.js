@@ -35,6 +35,7 @@ module.exports = {
             .setTitle("Notification")
             .setColor("Blue")
             .setDescription(notify.message)
+            .setTimestamp(notify.createdAt)
             .setFooter({
               text: notify.recipientID
                 ? `This message was scheduled from ${notify.userTag} || /notify`

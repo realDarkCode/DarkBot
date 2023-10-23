@@ -29,5 +29,22 @@ module.exports = {
             .setMinValue(0)
             .setMaxValue(100)
         )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("top_music")
+        .setDescription("Top music requested by you")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("skip")
+        .setDescription("Skip music to specific position in queue")
+        .addNumberOption((option) =>
+          option
+            .setName("amount")
+            .setDescription("How many songs you want to skip")
+            .setMinValue(1)
+            .setRequired(true)
+        )
     ),
 };

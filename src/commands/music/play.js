@@ -21,6 +21,6 @@ module.exports = {
       member: member,
     });
 
-    interaction.reply({ content: "🎼 Request Received" });
+    await interaction.reply({ content: "🎼 Request Received" });
   },
 };
