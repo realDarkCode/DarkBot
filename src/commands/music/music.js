@@ -32,8 +32,13 @@ module.exports = {
     )
     .addSubcommand((subcommand) =>
       subcommand
-        .setName("top_music")
-        .setDescription("Top music requested by you")
+        .setName("favorites")
+        .setDescription("Show list of the songs that you've played to most")
+    )
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("play_favorites")
+        .setDescription("Play your favorites songs as a playlist")
     )
     .addSubcommand((subcommand) =>
       subcommand

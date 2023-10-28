@@ -1,7 +1,7 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const musicCountService = require("../../services/music/musicCount.service");
 module.exports = {
-  subCommand: "music.top_music",
+  subCommand: "music.favorites",
   /**
    *
    * @param {ChatInputCommandInteraction} interaction
@@ -10,7 +10,7 @@ module.exports = {
     const { user } = interaction;
 
     const responseEmbed = new EmbedBuilder()
-      .setTitle("Top Music")
+      .setTitle("Your Favorites Musics")
       .setColor("DarkBlue");
 
     const topSongs = await musicCountService.topMusic({ userId: user.id });
@@ -21,12 +21,12 @@ module.exports = {
         : topSongs
             .map(
               (song, index) =>
-                `${index + 1}. [\`${song.count} times\`]- ${song.name.slice(
+                `${index + 1}.[\`${song.count} times\`]-${song.name.slice(
                   0,
-                  100
-                )}`
+                  40
+                )}... -<t:${Math.round(song.updatedAt / 1000)}:R>`
             )
-            .join("/n")
+            .join("\n")
     );
 
     await interaction.reply({ embeds: [responseEmbed] });
