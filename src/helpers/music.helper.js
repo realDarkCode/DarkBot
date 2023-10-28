@@ -30,7 +30,10 @@ const isValidMusicInteraction = async (interaction) => {
       ephemeral: true,
     });
     return false;
-  } else if (options?.getSubcommand() !== "play") {
+  } else if (
+    options?.getSubcommand() !== "play" &&
+    options?.getSubcommand() !== "play_favorites"
+  ) {
     const queue = await interaction.client.distube.getQueue(guild);
     if (!queue) {
       interaction.reply({

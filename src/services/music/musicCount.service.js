@@ -1,5 +1,5 @@
 const MusicCount = require("../../schemas/music/musicCount.schema");
-
+const { DisTube } = require("distube");
 const updateMusicCount = async ({
   userId,
   userName,
@@ -31,6 +31,7 @@ const topMusic = async ({ userId, limit = 10 }) => {
   return await MusicCount.find({ userId }, { userId: 0, guildId: 0 })
     .sort({
       count: -1,
+      updatedAt: -1,
     })
     .limit(limit);
 };

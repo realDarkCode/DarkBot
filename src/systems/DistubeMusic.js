@@ -41,18 +41,18 @@ const handleDistubeEvent = async (client) => {
         generateMusicPlayerStatus(queue, song)
       );
       client.musicControllerMsgId = msg.id;
-
+      updateMusicStatus(queue);
+    })
+    .on("finishSong", async (queue) => {
+      const song = queue.songs[0];
       updateMusicCount({
         userId: song.member.id,
         userName: song.member.displayName,
         guildId: song.member.guild.id,
         songId: song.id,
         name: song.name,
-        link: song.streamURL,
+        link: song.url,
       });
-      updateMusicStatus(queue);
-    })
-    .on("finishSong", async (queue) => {
       await updateMusicPlayerStatus(queue, true);
     })
     .on("addSong", (queue, song) => {
