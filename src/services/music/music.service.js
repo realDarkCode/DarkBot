@@ -1,13 +1,15 @@
 const {
   ChatInputCommandInteraction,
-  Client,
   EmbedBuilder,
   ButtonBuilder,
   ActionRowBuilder,
   ButtonStyle,
 } = require("discord.js");
 
-const { generateProgressBar, secondsToDuration } = require("./convert");
+const {
+  generateProgressBar,
+  secondsToDuration,
+} = require("../../helpers/convert");
 /**
  *
  * @param {ChatInputCommandInteraction} interaction
@@ -135,6 +137,14 @@ const generateMusicStatusButtons = (queue) => {
 };
 
 const generateMusicPlayerStatus = (queue, song, completed = false) => {
+  const previousSongsLength = queue.previousSongs.reduce(
+    (store, curr) => store + curr.duration,
+    0
+  );
+  let queuePlayedLength = previousSongsLength + queue.currentTime;
+  if (completed) queuePlayedLength += song.duration;
+  const totalQueueLength = previousSongsLength + queue.duration;
+
   return {
     embeds: [
       new EmbedBuilder()
@@ -167,11 +177,9 @@ const generateMusicPlayerStatus = (queue, song, completed = false) => {
             "",
             `Status: \`${
               completed ? `Completed` : queue.paused ? "Paused" : "Playing"
-            }\` | Queue: \`${
-              completed
-                ? secondsToDuration(song.duration)
-                : queue.formattedCurrentTime
-            }\` / \`${queue.formattedDuration}\` | Songs: \`${
+            }\` | Queue: \`${secondsToDuration(
+              queuePlayedLength
+            )}\` / \`${secondsToDuration(totalQueueLength)}\` | Songs: \`${
               queue.previousSongs.length + 1
             }/${queue.songs.length + queue.previousSongs.length}\``,
             `Volume: \`${queue.volume}%\` | Loop: \`${

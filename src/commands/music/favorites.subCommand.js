@@ -13,7 +13,9 @@ module.exports = {
       .setTitle("Your Favorites Musics")
       .setColor("DarkBlue");
 
-    const topSongs = await musicCountService.topMusic({ userId: user.id });
+    const topSongs = await musicCountService.getUserFavoriteMusic({
+      userId: user.id,
+    });
 
     responseEmbed.setDescription(
       topSongs.length === 0

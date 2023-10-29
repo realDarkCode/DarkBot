@@ -1,5 +1,7 @@
 const { ChatInputCommandInteraction } = require("discord.js");
-const { isValidMusicInteraction } = require("../../helpers/music.helper");
+const {
+  isValidMusicInteraction,
+} = require("../../services/music/music.service");
 const musicCountService = require("../../services/music/musicCount.service");
 
 const Distube = require("distube");
@@ -16,7 +18,7 @@ module.exports = {
     if (!valid) return;
 
     await interaction.deferReply();
-    let topSongs = await musicCountService.topMusic({
+    let topSongs = await musicCountService.getUserFavoriteMusic({
       userId: member.id,
       limit: 15,
     });

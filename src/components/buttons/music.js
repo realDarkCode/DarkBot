@@ -3,7 +3,7 @@ const {
   isValidMusicInteraction,
   clearPlayer,
   updateMusicPlayerStatus,
-} = require("../../helpers/music.helper");
+} = require("../../services/music/music.service");
 module.exports = {
   data: {
     name: "music",
