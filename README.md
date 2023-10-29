@@ -25,7 +25,7 @@ To install DarkBot, you will need to have Node.js and npm installed on your mach
 4. Rename the `.env.example` file to `.env` and add your variables
 5. Start the bot: `npm start`
 
-## Usage
+## Commands
 
 Once the bot is running, you can use the following commands:
 

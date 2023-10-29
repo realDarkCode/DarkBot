@@ -15,7 +15,7 @@ const {
  * @param {ChatInputCommandInteraction} interaction
  * @returns
  */
-const isValidMusicInteraction = async (interaction) => {
+const isValidMusicInteraction = async (interaction, queueRequired = true) => {
   const { member, guild, options } = interaction;
   const memberVoiceChanelId = member.voice.channelId;
   const botVoiceChannelId = guild.members.me.voice.channelId;
@@ -32,10 +32,7 @@ const isValidMusicInteraction = async (interaction) => {
       ephemeral: true,
     });
     return false;
-  } else if (
-    options?.getSubcommand() !== "play" &&
-    options?.getSubcommand() !== "play_favorites"
-  ) {
+  } else if (queueRequired) {
     const queue = await interaction.client.distube.getQueue(guild);
     if (!queue) {
       interaction.reply({

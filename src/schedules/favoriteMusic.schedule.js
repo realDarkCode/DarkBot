@@ -7,7 +7,7 @@ const {
 } = require("../services/music/musicCount.service");
 module.exports = {
   name: "favoriteMusic-schedule",
-  frequency: "15  16  *  *  4",
+  frequency: "0  16  *  *  4",
 
   /**
    * Send the favorite songs of previous month to user and clear the database.

@@ -17,6 +17,39 @@ module.exports = {
             .setRequired(true)
         )
     )
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("search")
+        .setDescription("Search video/playlist")
+        .addStringOption((option) =>
+          option
+            .setName("query")
+            .setDescription("The search term for video/playlist")
+            .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option
+            .setName("type")
+            .setDescription("Select the video type")
+            .addChoices(
+              {
+                name: "Playlist",
+                value: "playlist",
+              },
+              {
+                name: "Video",
+                value: "video",
+              }
+            )
+        )
+        .addNumberOption((option) =>
+          option
+            .setName("limit")
+            .setDescription("Number of search result")
+            .setMinValue(1)
+            .setMaxValue(10)
+        )
+    )
     .addSubcommand((subcommand) =>
       subcommand
         .setName("volume")
