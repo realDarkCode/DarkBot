@@ -1,5 +1,7 @@
 const { ChatInputCommandInteraction } = require("discord.js");
-const { isValidMusicInteraction } = require("../../helpers/music.helper");
+const {
+  isValidMusicInteraction,
+} = require("../../services/music/music.service");
 
 module.exports = {
   subCommand: "music.skip",

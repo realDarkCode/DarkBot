@@ -7,9 +7,8 @@ const {
 const {
   generateMusicPlayerStatus,
   updateMusicPlayerStatus,
-  resetPlayer,
   clearPlayer,
-} = require("../helpers/music.helper");
+} = require("../services/music/music.service");
 
 const { updateMusicCount } = require("../services/music/musicCount.service");
 
