@@ -12,7 +12,7 @@ module.exports = {
   async execute(interaction) {
     const { client, options, member, channel } = interaction;
 
-    const valid = await isValidMusicInteraction(interaction);
+    const valid = await isValidMusicInteraction(interaction, false);
 
     if (!valid) return;
 

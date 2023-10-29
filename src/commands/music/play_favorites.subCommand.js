@@ -14,7 +14,7 @@ module.exports = {
   async execute(interaction) {
     const { client, member, channel } = interaction;
 
-    const valid = await isValidMusicInteraction(interaction);
+    const valid = await isValidMusicInteraction(interaction, false);
     if (!valid) return;
 
     await interaction.deferReply();
