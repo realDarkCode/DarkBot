@@ -88,11 +88,11 @@ module.exports = {
     if (risk === "High" || risk === "Extreme") {
       const responseButton = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-          .setCustomId(`memberLogging-kick-${member.id}`)
+          .setCustomId(`memberLogging~kick~${member.id}`)
           .setLabel("Kick")
           .setStyle(ButtonStyle.Danger),
         new ButtonBuilder()
-          .setCustomId(`memberLogging-ban-${member.id}`)
+          .setCustomId(`memberLogging~ban~${member.id}`)
           .setLabel("Ban")
           .setStyle(ButtonStyle.Danger)
       );

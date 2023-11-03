@@ -22,13 +22,19 @@ module.exports = {
     const limit = options.getNumber("limit") || 10;
 
     await interaction.deferReply();
-    const searchResult = await client.distube.search(searchTerm, {
-      type,
-      limit,
-    });
+    let searchResult;
+    try {
+      searchResult = await client.distube.search(searchTerm, {
+        type,
+        limit,
+      });
+    } catch (error) {
+      searchResult = [];
+    }
 
     const responseEmbed = new EmbedBuilder()
       .setTitle("Music Search Result")
+      .setColor("Purple")
       .setDescription(
         `${
           searchResult.length == 0
@@ -43,25 +49,30 @@ module.exports = {
                 .join("\n")
         }`
       );
-
+    let r1 = new ActionRowBuilder(),
+      r2 = new ActionRowBuilder();
     const buttons = [];
+    const components = [];
 
-    for (let i = 0; i < limit; i++) {
-      buttons.push(
-        new ButtonBuilder({
-          label: numEmoji[i],
-          custom_id: `play-${searchResult[i].url}`,
-          style: ButtonStyle.Primary,
-        })
-      );
+    if (searchResult.length) {
+      for (let i = 0; i < limit; i++) {
+        buttons.push(
+          new ButtonBuilder({
+            label: numEmoji[i],
+            custom_id: `play~${searchResult[i].url}`,
+            style: ButtonStyle.Primary,
+          })
+        );
+      }
+      r1.setComponents(buttons.slice(0, 5));
+      if (limit > 5) r2.setComponents(buttons.slice(5, limit));
     }
-
-    const r1 = new ActionRowBuilder().setComponents(buttons.slice(0, 5));
-    const r2 = new ActionRowBuilder().setComponents(buttons.slice(5, 10));
+    if (r1.components.length) components.push(r1);
+    if (r2.components.length) components.push(r2);
 
     return await interaction.editReply({
       embeds: [responseEmbed],
-      components: [r1, r2],
+      components,
     });
   },
 };

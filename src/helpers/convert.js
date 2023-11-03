@@ -54,13 +54,25 @@ const generateProgressBar = (length, totalLength, barLength = 20) => {
 };
 
 const secondsToDuration = (seconds) => {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  const formattedSeconds = String(Math.round(remainingSeconds)).padStart(
-    2,
-    "0"
-  );
-  return `${minutes}:${formattedSeconds}`;
+  const secondsInNum = parseInt(seconds, 10); // don't forget the second param
+  let hours = Math.floor(secondsInNum / 3600);
+  let minutes = Math.floor((secondsInNum - hours * 3600) / 60);
+  let _seconds = secondsInNum - hours * 3600 - minutes * 60;
+
+  if (hours && hours < 10) {
+    hours = "0" + hours;
+  }
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  if (_seconds < 10) {
+    _seconds = "0" + _seconds;
+  }
+  if (hours) {
+    return hours + ":" + minutes + ":" + _seconds;
+  } else {
+    return minutes + ":" + _seconds;
+  }
 };
 
 const getPresenceStatusEmoji = (status) => {
