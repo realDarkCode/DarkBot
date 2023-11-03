@@ -40,7 +40,7 @@ const dropCollection = () => {
   return MusicCount.deleteMany();
 };
 
-const getAllUserFavoriteMusic = async (limit = 15) => {
+const getAllUserFavoriteMusic = async (limit) => {
   let result = await MusicCount.aggregate([
     {
       $group: {
@@ -63,8 +63,15 @@ const getAllUserFavoriteMusic = async (limit = 15) => {
   return result.map((u) => ({
     ...u,
     songs: u.songs
-      .sort((a, b) => b.count - a.count)
-      .sort((a, b) => b.updatedAt - a.updatedAt)
+      .sort((a, b) => {
+        if (a.count < b.count) return 1;
+        else if (a.count > b.count) return -1;
+        else {
+          if (a.updatedAt < b.updatedAt) return 1;
+          else if (a.updatedAt > b.updatedAt) return -1;
+          return 0;
+        }
+      })
       .slice(0, limit),
   }));
 };
