@@ -26,7 +26,7 @@ module.exports = {
       .setTimestamp();
     if (!interaction.isButton()) return;
 
-    const buttonInfo = interaction.customId.split("-");
+    const buttonInfo = interaction.customId.split("~");
     const button = client.components.get(buttonInfo[0]);
 
     if (!button) {
