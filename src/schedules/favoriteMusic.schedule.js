@@ -1,24 +1,22 @@
 const { Client, EmbedBuilder } = require("discord.js");
-const botConfig = require("../config/bot");
 const { isFirstWeekInMonth } = require("../helpers/date");
 const {
   getAllUserFavoriteMusic,
-  dropCollection,
 } = require("../services/music/musicCount.service");
 module.exports = {
   name: "favoriteMusic-schedule",
-  frequency: "0  16  *  *  4",
+  frequency: "15 18  *  *  4",
 
   /**
-   * Send the favorite songs of previous month to user and clear the database.
+   * Send the favorite songs of previous month to user [First Thursday 16:15 of every month]
    * @param {Client} client
    */
   async task(client) {
     try {
-      const isFirstThursdayOfMonth = isFirstWeekInMonth(new Date());
-      if (!isFirstThursdayOfMonth) return;
+      const isFirstWeekOfMonth = isFirstWeekInMonth(new Date());
+      if (!isFirstWeekOfMonth) return;
 
-      const users = await getAllUserFavoriteMusic();
+      const users = await getAllUserFavoriteMusic(15);
 
       await Promise.all(
         users.map(async (user) => {
@@ -46,7 +44,7 @@ module.exports = {
                     .join("\n")
             )
             .setFooter({
-              text: "You previous month music record has been deleted.",
+              text: "You previous month music record will bee deleted within 2 days. Enjoy you favorites now.",
             });
 
           u.send({
@@ -59,7 +57,6 @@ module.exports = {
           });
         })
       );
-      await dropCollection();
     } catch (error) {
       console.log("Error occurred while executing schedule job:", error);
       return;
