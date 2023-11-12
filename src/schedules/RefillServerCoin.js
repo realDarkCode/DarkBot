@@ -21,7 +21,7 @@ module.exports = {
           `Claim todays coin at: https://bot-hosting.net/panel/earn`
         );
 
-      await developer.dmChannel.send({ embeds: [responseEmbed] });
+      await developer.send({ embeds: [responseEmbed] });
     } catch (error) {
       console.log(error);
       return;

@@ -14,26 +14,32 @@ module.exports = {
 
       if (!toNotifies.length) return;
 
-      await Promise.all(
+      await Promise.allSettled(
         toNotifies.map(async (notify) => {
-          let user;
-          if (notify.recipientID) {
-            user = await client.users.fetch(notify.recipientID);
-          }
-          if (!user) user = await client.users.fetch(notify.userID);
+          let recipient;
+          const sender = await client.users.fetch(notify.userID);
 
-          if (!user) {
+          if (notify.recipientID) {
+            recipient = await client.users.fetch(notify.recipientID);
+          }
+          if (!recipient) recipient = sender;
+
+          if (!recipient) {
             return console.log(
               "User not found",
               notify.recipientID || notify.userID
             );
           }
 
-          await user.createDM();
+          await recipient.createDM();
 
           const embed = new EmbedBuilder()
-            .setTitle("Notification")
-            .setColor("Blue")
+            .setColor("DarkOrange")
+            .setTitle(`Message from ${notify.userTag || "Yourself"}`)
+            .setAuthor({
+              name: sender.displayName || notify.userTag,
+              iconURL: sender.avatarURL(),
+            })
             .setDescription(notify.message)
             .setTimestamp(notify.createdAt)
             .setFooter({
@@ -44,7 +50,7 @@ module.exports = {
 
           if (notify.image) embed.setImage(notify.image);
 
-          await user.send({ embeds: [embed] });
+          await recipient.send({ embeds: [embed] });
           sendId.push(notify._id);
         })
       );

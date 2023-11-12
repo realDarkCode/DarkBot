@@ -1,11 +1,11 @@
 const MusicCount = require("../../schemas/music/musicCount.schema");
-const { DisTube } = require("distube");
 const updateMusicCount = async ({
   userId,
   userName,
   guildId,
   songId,
   name,
+  duration,
   link,
 }) => {
   await MusicCount.findOneAndUpdate(
@@ -15,6 +15,7 @@ const updateMusicCount = async ({
       userId,
       guildId,
       songId,
+      duration,
       name,
       link,
       $inc: {
@@ -27,11 +28,11 @@ const updateMusicCount = async ({
   );
 };
 
-const getUserFavoriteMusic = async ({ userId, limit = 15 }) => {
+const getUserFavoriteMusic = async ({ userId, limit = 25 }) => {
   return await MusicCount.find({ userId }, { userId: 0, guildId: 0 })
     .sort({
       count: -1,
-      updatedAt: -1,
+      createdAt: -1,
     })
     .limit(limit);
 };
@@ -40,12 +41,15 @@ const dropCollection = () => {
   return MusicCount.deleteMany();
 };
 
-const getAllUserFavoriteMusic = async (limit) => {
+const getAllUserFavoriteMusic = async (limit = 25) => {
   let result = await MusicCount.aggregate([
     {
       $group: {
         _id: "$userId",
-        totalSongsCount: {
+        totalUniqueSongsDuration: {
+          $sum: "$duration",
+        },
+        totalSongs: {
           $sum: "$count",
         },
         songs: {
@@ -56,19 +60,28 @@ const getAllUserFavoriteMusic = async (limit) => {
     {
       $project: {
         "songs._id": 0,
+        "songs.songId": 0,
+        "songs.guildId": 0,
+        "songs.userId": 0,
       },
     },
   ]);
 
   return result.map((u) => ({
+    totalSongsDuration: u.songs.reduce(
+      (store, current) => store + current.count * current.duration,
+      0
+    ),
+    totalUniqueSongs: u.songs.length,
     ...u,
+
     songs: u.songs
       .sort((a, b) => {
         if (a.count < b.count) return 1;
         else if (a.count > b.count) return -1;
         else {
-          if (a.updatedAt < b.updatedAt) return 1;
-          else if (a.updatedAt > b.updatedAt) return -1;
+          if (a.createdAt < b.createdAt) return 1;
+          else if (a.createdAt > b.createdAt) return -1;
           return 0;
         }
       })

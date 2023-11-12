@@ -1,5 +1,6 @@
 const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const musicCountService = require("../../services/music/musicCount.service");
+const { secondsToDuration } = require("../../helpers/convert");
 module.exports = {
   subCommand: "music.favorites",
   /**
@@ -25,8 +26,10 @@ module.exports = {
               (song, index) =>
                 `${index + 1}.[\`${song.count} times\`]-${song.name.slice(
                   0,
-                  40
-                )}... -<t:${Math.round(song.updatedAt / 1000)}:R>`
+                  30
+                )}... \`${secondsToDuration(
+                  song.duration || 0
+                )}\` -<t:${Math.round(song.updatedAt / 1000)}:R>`
             )
             .join("\n")
     );

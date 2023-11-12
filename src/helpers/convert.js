@@ -69,9 +69,9 @@ const secondsToDuration = (seconds) => {
     _seconds = "0" + _seconds;
   }
   if (hours) {
-    return hours + ":" + minutes + ":" + _seconds;
+    return `${hours}:${minutes}:${_seconds}`;
   } else {
-    return minutes + ":" + _seconds;
+    return `${minutes}:${_seconds}`;
   }
 };
 

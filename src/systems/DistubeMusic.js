@@ -48,6 +48,7 @@ const handleDistubeEvent = async (client) => {
         userId: song.member.id,
         userName: song.member.displayName,
         guildId: song.member.guild.id,
+        duration: song.duration,
         songId: song.id,
         name: song.name,
         link: song.url,

@@ -21,12 +21,12 @@ module.exports = {
           { name: "45 min", value: 45 },
           { name: "1 hour", value: 30 },
           { name: "1 hour 30 minutes", value: 90 },
-          { name: "2 hours", value: 2 * 60 },
           { name: "3 hours", value: 3 * 60 },
-          { name: "4 hours", value: 4 * 60 },
           { name: "6 hours", value: 6 * 60 },
           { name: "12 hours", value: 12 * 60 },
+          { name: "16 hours", value: 16 * 60 },
           { name: "1 Days", value: 24 * 60 },
+          { name: "2 Days", value: 2 * 24 * 60 },
           { name: "3 Days", value: 3 * 24 * 60 }
         )
     )
@@ -34,7 +34,7 @@ module.exports = {
       option
         .setName("message")
         .setDescription("set the message for the notify [max 450 characters]")
-        .setMaxLength(450)
+        .setMaxLength(4000)
         .setMinLength(3)
         .setRequired(true)
     )
@@ -47,7 +47,7 @@ module.exports = {
         .setDescription(
           "Give the exact image link which will be attached to the message"
         )
-        .setMaxLength(150)
+        .setMaxLength(350)
     ),
   /**
    *

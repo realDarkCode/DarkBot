@@ -17,6 +17,10 @@ module.exports = model(
         type: String,
         required: true,
       },
+      duration: {
+        type: Number,
+        required: true,
+      },
       name: {
         type: String,
         required: true,
