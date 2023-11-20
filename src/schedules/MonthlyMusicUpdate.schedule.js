@@ -7,7 +7,7 @@ const { secondsToDuration } = require("../helpers/convert");
 
 module.exports = {
   name: "favoriteMusic-schedule",
-  frequency: "15 18  *  *  4",
+  frequency: "45 17  *  *  4",
 
   /**
    * Send the favorite songs of previous month to user [First Thursday 16:15 of every month]
