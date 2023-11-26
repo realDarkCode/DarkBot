@@ -84,5 +84,17 @@ module.exports = {
             .setMinValue(1)
             .setRequired(true)
         )
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("seek")
+        .setDescription("Set the playing time to another position")
+        .addNumberOption((option) =>
+          option
+            .setName("seconds")
+            .setDescription("Enter the duration in seconds")
+            .setMinValue(5)
+            .setRequired(true)
+        )
     ),
 };
