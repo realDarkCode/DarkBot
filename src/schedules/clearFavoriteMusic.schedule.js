@@ -1,18 +1,18 @@
 const { Client, EmbedBuilder } = require("discord.js");
-const { isFirstWeekInMonth } = require("../helpers/date");
 const musicCountService = require("../services/music/musicCount.service");
 module.exports = {
   name: "favoriteMusic-schedule",
-  frequency: "0 23  *  *  5",
+  frequency: "59 23  *  *  6",
 
   /**
-   *  clear the music count database records [Every first Friday of month 00:00].
+   *  clear the music count database records [Every first Saturday after day 1 of month 00:00].
    * @param {Client} client
    */
   async task(client) {
     try {
-      const isFirstWeekOfMonth = isFirstWeekInMonth(new Date());
-      if (!isFirstWeekOfMonth) return;
+      const dateInMonth = new Date().getDate();
+      const hasTimePassedForStatsToSend = dateInMonth > 1 && dateInMonth <= 8;
+      if (!hasTimePassedForStatsToSend) return;
 
       await musicCountService.dropCollection();
     } catch (error) {
