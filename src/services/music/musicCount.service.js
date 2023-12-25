@@ -28,7 +28,7 @@ const updateMusicCount = async ({
   );
 };
 
-const getUserFavoriteMusic = async ({ userId, limit = 25 }) => {
+const getUserFavoriteMusic = async ({ userId, limit = 10 }) => {
   return await MusicCount.find({ userId }, { userId: 0, guildId: 0 })
     .sort({
       count: -1,
