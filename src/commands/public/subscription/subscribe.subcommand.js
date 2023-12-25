@@ -23,7 +23,7 @@ module.exports = {
         )}:R>`
       );
     } else {
-      const subscription = await subscriptionService.subscribe({
+      await subscriptionService.subscribe({
         userId: member.id,
         userName: member.displayName,
         serviceName: serviceName,
@@ -31,7 +31,7 @@ module.exports = {
       embed.setColor("Green");
 
       embed.setDescription(
-        `You have successfully subscribed to \`${subscription.serviceName}\` service`
+        `You have successfully subscribed to \`${serviceName}\` service`
       );
     }
     return await interaction.reply({ embeds: [embed] });
