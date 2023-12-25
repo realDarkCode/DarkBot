@@ -11,7 +11,11 @@ module.exports = model(
     {
       userId: strReq,
       userName: String,
-      serviceName: strReq,
+      serviceName: {
+        type: String,
+        required: true,
+        lowercase: true,
+      },
       isActive: {
         type: Boolean,
         default: true,

@@ -2,7 +2,7 @@ const optionConfig = {
   serviceList: [
     {
       name: "Cat",
-      shortDescription: "(coming soon) Send random cat images everyday",
+      shortDescription: "Send random cat images everyday",
     },
     {
       name: "Health",
