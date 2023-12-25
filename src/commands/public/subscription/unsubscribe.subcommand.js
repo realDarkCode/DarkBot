@@ -24,14 +24,14 @@ module.exports = {
         `You are not  subscribed to \`${serviceName}\` service yet`
       );
     } else {
-      const inactiveSubscription = await subscriptionService.unSubscribe({
+      await subscriptionService.unSubscribe({
         userId: member.id,
         userName: member.displayName,
         serviceName: serviceName,
       });
       embed.setColor("Green");
       embed.setDescription(
-        `You have successfully unsubscribed to \`${inactiveSubscription.serviceName}\` service`
+        `You have successfully unsubscribed to \`${serviceName}\` service`
       );
     }
     return await interaction.reply({ embeds: [embed] });

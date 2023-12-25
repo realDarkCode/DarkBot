@@ -39,4 +39,14 @@ const getUserSubscriptionList = (userId) => {
   return find({ userId });
 };
 
-module.exports = { subscribe, unSubscribe, getUserSubscriptionList, searchOne };
+const getSubscriptionByService = (serviceName) => {
+  return find({ serviceName });
+};
+
+module.exports = {
+  subscribe,
+  unSubscribe,
+  getUserSubscriptionList,
+  searchOne,
+  getSubscriptionByService,
+};
