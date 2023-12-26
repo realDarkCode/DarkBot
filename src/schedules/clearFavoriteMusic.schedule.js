@@ -1,7 +1,7 @@
 const { Client, EmbedBuilder } = require("discord.js");
 const musicCountService = require("../services/music/musicCount.service");
 module.exports = {
-  name: "favoriteMusic-schedule",
+  name: "clearFavoriteMusic",
   frequency: "59 23  *  *  6",
 
   /**
