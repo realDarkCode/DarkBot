@@ -20,6 +20,7 @@ const guildConfigSchema = new Schema(
       adminRoleId: String,
       adminRoleName: String,
     },
+    announcementChannelId: String,
   },
   {
     timestamps: true,
