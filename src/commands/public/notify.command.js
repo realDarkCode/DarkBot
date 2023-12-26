@@ -60,7 +60,9 @@ module.exports = {
     const embed = new EmbedBuilder().setTitle("Notify");
 
     const time = interaction.options.getNumber("time");
-    const message = interaction.options.getString("message");
+    const message = interaction.options
+      .getString("message")
+      ?.replace(/(\\n)/g, "\n");
     let notifyTime = new Date();
 
     notifyTime = new Date(notifyTime.setSeconds(0) + time * 60000);

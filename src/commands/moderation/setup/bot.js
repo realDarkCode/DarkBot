@@ -12,10 +12,14 @@ module.exports = {
     const { guildId, client, options } = interaction;
 
     // extract mentioned bot config
-    const botLogChannelId = options.getChannel("log_channel").id;
+    const botLogChannelId = options.getChannel("log_channel")?.id;
+    const announcementChannelId = options.getChannel(
+      "announcement_channel"
+    )?.id;
 
     const botConfig = {
       botLogChannelId,
+      announcementChannelId,
     };
 
     // update bot log channel id to the database
@@ -33,7 +37,16 @@ module.exports = {
       .setColor("Green")
       .setTitle("Bot Configuration Updated")
       .setDescription(
-        [`- Bot Logging Channel: <#${botLogChannelId}>`].join("\n")
+        [
+          `- Bot Logging Channel: ${
+            botLogChannelId ? `<#${botLogChannelId}>` : "`Not specified`"
+          } `,
+          `- Announcement Channel:  ${
+            announcementChannelId
+              ? `<#${announcementChannelId}>`
+              : "`Not specified`"
+          } `,
+        ].join("\n")
       );
 
     interaction.reply({ embeds: [embed] });
