@@ -41,6 +41,12 @@ module.exports = {
             .setDescription("set  bot default logging channel")
             .addChannelTypes(ChannelType.GuildText)
         )
+        .addChannelOption((option) =>
+          option
+            .setName("announcement_channel")
+            .setDescription("select public announcement channel")
+            .addChannelTypes(ChannelType.GuildText)
+        )
     )
     .addSubcommand((option) =>
       option
