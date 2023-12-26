@@ -33,7 +33,7 @@ const subTask = async (client) => {
 };
 
 module.exports = {
-  name: "catService-schedule",
+  name: "catService",
   frequency: "0 22 * * *",
   /**
    * Sent a cat to subscribed users. [once in Every day 22:00-22:50 ]
