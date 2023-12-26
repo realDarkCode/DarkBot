@@ -7,15 +7,17 @@ const {
   ButtonBuilder,
   ComponentBuilder,
   ButtonStyle,
+  ChannelType,
 } = require("discord.js");
 const GuildConfig = require("../../schemas/guildConfig.schema");
+const { discordColorsName } = require("../../helpers/constant");
 
 module.exports = {
   developerOnly: true,
   data: new SlashCommandBuilder()
     .setName("announce")
     .setDescription(
-      "Post an announcement as embed to configured public announcement channel"
+      "Post an announcement as embed to configured public announcement channel or specified channel"
     )
     .setDMPermission(false)
     .addBooleanOption((option) =>
@@ -23,6 +25,12 @@ module.exports = {
     )
     .addStringOption((option) =>
       option.setName("title").setDescription("set the embed title")
+    )
+    .addStringOption((option) =>
+      option
+        .setName("color")
+        .setDescription("Set the embed color")
+        .addChoices(...discordColorsName.map((c) => ({ name: c, value: c })))
     )
     .addStringOption((option) =>
       option.setName("description").setDescription("set the embed description")
@@ -56,6 +64,12 @@ module.exports = {
         .setDescription(
           "Mention roles/user to mention at the very fast of the announcement"
         )
+    )
+    .addChannelOption((option) =>
+      option
+        .setName("channel")
+        .setDescription("Select the channel to post the announcement")
+        .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
     ),
 
   /**
@@ -63,22 +77,22 @@ module.exports = {
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
-    const { options, client, user } = interaction;
+    const { options, client, user, guildId } = interaction;
 
     // Extract values from interaction
-    const isBotPost = options.getBoolean("bot_post");
+    const isBotPost = options.getBoolean("bot_post") ?? true;
     const title = options.getString("title");
-    const description = options
-      .getString("description")
-      ?.replace(/(\\n)/g, "\n");
+    let description = options.getString("description")?.replace(/(\\n)/g, "\n");
     const thumbnail = options.getString("thumbnail");
     const image = options.getString("image");
     const footer = options.getString("footer_text");
     const mention1 = options.getMentionable("mention1");
     const mention2 = options.getMentionable("mention2");
     const mention3 = options.getMentionable("mention3");
+    const color = options.getString("color");
+    const channel = options.getChannel("channel");
 
-    const responseEmbed = new EmbedBuilder().setColor("Purple");
+    const responseEmbed = new EmbedBuilder().setColor(color || "Purple");
 
     if (isBotPost) {
       responseEmbed.setAuthor({
@@ -93,22 +107,34 @@ module.exports = {
     }
 
     title && responseEmbed.setTitle(title);
-    description && responseEmbed.setDescription(description);
+    description &&
+      responseEmbed.setDescription(
+        (description += `\n\n ${mention1 || ""} ${mention2 || ""} ${
+          mention3 || ""
+        }`)
+      );
     thumbnail && responseEmbed.setThumbnail(thumbnail);
     image && responseEmbed.setImage(image);
     footer && responseEmbed.setFooter({ text: footer });
 
+    const announcementChannelId =
+      channel?.id || client.guildConfig?.get(guildId)?.announcementChannelId;
+
     await interaction.reply({
-      content: `Hey \n${mention1 || ""} ${mention2 || ""} ${mention3 || ""}`,
+      content: `Here is the preview of the post. Please confirm.\n[This preview will be deleted after posting the message]\nchannel: <#${announcementChannelId}>`,
       embeds: [responseEmbed],
       components: [
         new ActionRowBuilder().addComponents(
           new ButtonBuilder()
-            .setCustomId(`announcement~confirm~${user.id}`)
+            .setCustomId(
+              `announcement~confirm~${user.id}~${announcementChannelId}`
+            )
             .setLabel("Confirm")
             .setStyle(ButtonStyle.Success),
           new ButtonBuilder()
-            .setCustomId(`announcement~cancel~${user.id}`)
+            .setCustomId(
+              `announcement~cancel~${user.id}~${announcementChannelId}`
+            )
             .setLabel("Cancel")
             .setStyle(ButtonStyle.Danger)
         ),

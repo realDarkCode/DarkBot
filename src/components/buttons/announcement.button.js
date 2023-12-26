@@ -12,24 +12,13 @@ module.exports = {
     const { buttonInfo, client, message, guildId, user } = interaction;
 
     const operation = buttonInfo[0];
-
     const userId = buttonInfo[1];
+    const channelId = buttonInfo[2];
 
-    const announcementChannelId =
-      client?.guildConfig.get(guildId).announcementChannelId;
-
-    if (!announcementChannelId) {
-      return await interaction.reply({
-        content:
-          "❌ You sever has no announcement channel configured. Please configure first",
-      });
-    }
-
-    const channel = await client.channels.fetch(announcementChannelId);
+    const channel = await client.channels.fetch(channelId);
     if (!channel) {
       return await interaction.reply({
-        content:
-          "❌ your announcement channel is not found. please reconfigure",
+        content: "❌ the channel is not found. please try again",
       });
     }
 
@@ -44,14 +33,17 @@ module.exports = {
         { content: message.content, embeds: message.embeds },
         { fetch: true }
       );
-
-      msg.react("🎉");
-      msg.react("❤");
-      msg.react("👎");
-      msg.react("😆");
-      msg.react("😮");
-      msg.react("😢");
-      msg.react("😠");
+      if (
+        channelId == client.guildConfig?.get(guildId)?.announcementChannelId
+      ) {
+        msg.react("🎉");
+        msg.react("❤");
+        msg.react("👎");
+        msg.react("😆");
+        msg.react("😮");
+        msg.react("😢");
+        msg.react("😠");
+      }
     }
 
     return await message.delete();
