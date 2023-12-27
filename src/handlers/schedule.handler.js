@@ -36,8 +36,23 @@ module.exports = async (client) => {
 
   );
 
+<<<<<<< HEAD
   // log status
   if (table.__rows.length && process.env.LOG) console.log(table.toString());
   if (table.__rows.length) console.log(`${schedules.length} schedules loaded`);
 
+=======
+  table.addRow("", "Total:", count);
+
+  // log status
+  const status = count
+    ? process.env.LOG_TABLE === "on"
+      ? table.toString()
+      : `${count} schedules loaded`
+    : "No schedules found";
+
+  console.log(status);
+
+  return count;
+>>>>>>> 1136500 (refactor(handlers): add components reload command, prettify handlers logging, minor fixes)
 };

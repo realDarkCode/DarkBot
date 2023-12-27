@@ -9,7 +9,10 @@ module.exports = {
    */
   async execute(interaction) {
     const client = interaction.client;
-    await loadCommands(client);
-    interaction.reply({ content: "Commands reloaded", ephemeral: true });
+    const commandList = await loadCommands(client);
+    interaction.reply({
+      content: `loaded ${commandList.length} commands`,
+      ephemeral: true,
+    });
   },
 };
