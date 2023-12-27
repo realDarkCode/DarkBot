@@ -37,6 +37,7 @@ module.exports = async (client) => {
   );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // log status
   if (table.__rows.length && process.env.LOG) console.log(table.toString());
   if (table.__rows.length) console.log(`${schedules.length} schedules loaded`);
@@ -44,6 +45,10 @@ module.exports = async (client) => {
 =======
   table.addRow("", "Total:", count);
 
+=======
+  table.addRow("", "Total:", count);
+
+>>>>>>> 1136500 (refactor(handlers): add components reload command, prettify handlers logging, minor fixes)
   // log status
   const status = count
     ? process.env.LOG_TABLE === "on"
@@ -54,5 +59,8 @@ module.exports = async (client) => {
   console.log(status);
 
   return count;
+<<<<<<< HEAD
+>>>>>>> 1136500 (refactor(handlers): add components reload command, prettify handlers logging, minor fixes)
+=======
 >>>>>>> 1136500 (refactor(handlers): add components reload command, prettify handlers logging, minor fixes)
 };
