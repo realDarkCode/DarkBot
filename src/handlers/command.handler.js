@@ -3,7 +3,11 @@ const loadCommands = async (client) => {
 
   // Initialize the table for logging status
   const ascii = require("ascii-table");
-  const table = new ascii("Commands").setHeading("SL", "Command", "Status");
+  const table = new ascii("Commands Loaded").setHeading(
+    "S/N",
+    "Command",
+    "Status"
+  );
 
   // clear previous commands from cache
   await client.commands.clear();
@@ -27,18 +31,28 @@ const loadCommands = async (client) => {
       }
     } catch (error) {
       console.log(error);
-      table.addRow(commandArray.length, command.data.name, "🟥");
+      table.addRow(
+        commandArray.length,
+        command.data?.name || commandFile.slice(-15),
+        "🟥"
+      );
     }
   });
 
+  table.addRow("", "total", commandArray.length);
   // setting command to bot
   client.application.commands.set(commandArray);
 
   // log status
-  if (table.__rows.length)
-    // console.log(table.toString(), `\n${commandArray.length} Commands Loaded`);
-    console.log(`${commandArray.length} Commands Loaded`);
-  else console.log("No commands found");
+  const status = commandArray.length
+    ? process.env.LOG_TABLE === "on"
+      ? table.toString()
+      : `${commandArray.length} commands loaded`
+    : "No commands found";
+
+  console.log(status);
+
+  return commandArray;
 };
 
 module.exports = loadCommands;

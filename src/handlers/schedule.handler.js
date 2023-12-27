@@ -5,7 +5,11 @@ module.exports = async (client) => {
   const { loadFiles } = require("../functions/fileLoader");
 
   const ascii = require("ascii-table");
-  const table = new ascii("Schedules").setHeading("SL", "schedule", "Status");
+  const table = new ascii("Schedules Loaded").setHeading(
+    "SL",
+    "schedule",
+    "Status"
+  );
 
   const schedules = await loadFiles("schedules");
   await Promise.all(
@@ -33,8 +37,16 @@ module.exports = async (client) => {
     })
   );
 
-  table.addRow("Total:", count);
+  table.addRow("", "Total:", count);
 
-  if (table.__rows.length) console.log(table.toString());
-  else console.log("No schedules found");
+  // log status
+  const status = count
+    ? process.env.LOG_TABLE === "on"
+      ? table.toString()
+      : `${count} schedules loaded`
+    : "No schedules found";
+
+  console.log(status);
+
+  return count;
 };

@@ -30,7 +30,7 @@ module.exports = {
 
     if (operation === "confirm") {
       const msg = await channel.send(
-        { content: message.content, embeds: message.embeds },
+        { embeds: message.embeds },
         { fetch: true }
       );
       if (

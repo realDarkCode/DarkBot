@@ -5,21 +5,19 @@ const {
   ChatInputCommandInteraction,
   ActionRowBuilder,
   ButtonBuilder,
-  ComponentBuilder,
   ButtonStyle,
   ChannelType,
 } = require("discord.js");
-const GuildConfig = require("../../schemas/guildConfig.schema");
 const { discordColorsName } = require("../../helpers/constant");
 
 module.exports = {
-  developerOnly: true,
   data: new SlashCommandBuilder()
     .setName("announce")
     .setDescription(
       "Post an announcement as embed to configured public announcement channel or specified channel"
     )
     .setDMPermission(false)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addBooleanOption((option) =>
       option.setName("bot_post").setDescription("Post as a bot or admin")
     )

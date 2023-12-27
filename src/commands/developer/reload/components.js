@@ -1,21 +1,17 @@
 const { ChatInputCommandInteraction } = require("discord.js");
-const { loadEvents } = require("../../../handlers");
+const { loadComponents } = require("../../../handlers");
 
 module.exports = {
-  subCommand: "reload.events",
+  subCommand: "reload.components",
   /**
    *
    * @param {ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
     const client = interaction.client;
-
-    for (const [key, value] of client.events)
-      client.removeListener(key, value, true);
-    const eventList = await loadEvents(client);
-
+    const componentList = await loadComponents(client);
     interaction.reply({
-      content: `loaded ${eventList.length} events`,
+      content: `loaded ${componentList.length} components`,
       ephemeral: true,
     });
   },
