@@ -40,7 +40,7 @@ const getUserSubscriptionList = (userId) => {
 };
 
 const getSubscriptionByService = (serviceName) => {
-  return find({ serviceName });
+  return find({ serviceName, isActive: true });
 };
 
 module.exports = {
