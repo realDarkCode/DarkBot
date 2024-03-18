@@ -12,23 +12,26 @@ module.exports = {
     .addNumberOption((option) =>
       option
         .setName("time")
-        .setDescription("set the time for the notify in minutes")
+        .setDescription("set the delay time for the notify in minutes")
         .setRequired(true)
         .addChoices(
-          { name: "5 min", value: 5 },
-          { name: "15 min", value: 15 },
-          { name: "30 min", value: 30 },
-          { name: "45 min", value: 45 },
+          { name: "5 Minutes", value: 5 },
+          { name: "10 Minutes", value: 10 },
+          { name: "15 Minutes", value: 15 },
+          { name: "30 Minutes", value: 30 },
+          { name: "45 Minutes", value: 45 },
           { name: "1 hour", value: 30 },
           { name: "1 hour 30 minutes", value: 90 },
-          { name: "3 hours", value: 3 * 60 },
-          { name: "6 hours", value: 6 * 60 },
-          { name: "8 hours", value: 8 * 60 },
-          { name: "12 hours", value: 12 * 60 },
-          { name: "16 hours", value: 16 * 60 },
+          { name: "3 Hours", value: 3 * 60 },
+          { name: "6 Hours", value: 6 * 60 },
+          { name: "8 Hours", value: 8 * 60 },
+          { name: "12 Hours", value: 12 * 60 },
+          { name: "16 Hours", value: 16 * 60 },
           { name: "1 Days", value: 24 * 60 },
           { name: "2 Days", value: 2 * 24 * 60 },
-          { name: "3 Days", value: 3 * 24 * 60 }
+          { name: "3 Days", value: 3 * 24 * 60 },
+          { name: "5 Days", value: 5 * 24 * 60 },
+          { name: "7 Days", value: 7 * 24 * 60 }
         )
     )
     .addStringOption((option) =>
