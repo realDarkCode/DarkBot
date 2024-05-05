@@ -18,7 +18,10 @@ module.exports = {
       guildName: guild.name,
       userID: userId,
       userName: user.username,
-      status,
+      status: {
+        text: status,
+        time: new Date()
+      },
     });
   },
 };

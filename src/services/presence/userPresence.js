@@ -7,14 +7,22 @@ const updateUserPresence = ({
   guildName,
   status,
 }) => {
+  const data = {
+    userID,
+    userName,
+    guildID,
+    guildName,
+  }
   return UserPresence.findOneAndUpdate(
     { userID },
     {
-      userID,
-      userName,
-      status,
-      guildID,
-      guildName,
+      $set: data,
+      $push: {
+        'status': {
+          $each: [status],
+          $slice: -6
+        }
+      }
     },
     {
       upsert: true,

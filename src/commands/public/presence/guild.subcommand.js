@@ -23,17 +23,16 @@ module.exports = {
       membersPresence.length === 0
         ? "No data recorded yet. please wait a while"
         : membersPresence
-            .map(
-              (presence, index) => `${index + 1}. \`${
-                presence.userName
-              }\` - ${getPresenceStatusEmoji(
-                presence.status
+          .map(
+            (presence, index) => `${index + 1}. \`${presence.userName
+              }\` ${getPresenceStatusEmoji(
+                presence.status[0]?.text
               )} - <t:${Math.round(
                 new Date(presence.updatedAt).getTime() / 1000
               )}:R>
               `
-            )
-            .join("\n")
+          )
+          .join("\n")
     );
 
     interaction.reply({ embeds: [response], ephemeral: true });

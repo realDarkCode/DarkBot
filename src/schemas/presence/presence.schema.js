@@ -1,5 +1,18 @@
 const { model, Schema } = require("mongoose");
 
+
+const status = new Schema({
+  text: {
+    type: String,
+    required: true
+  },
+  time: {
+    type: Date,
+    required: true
+  }
+})
+
+
 module.exports = model(
   "presence",
   new Schema(
@@ -15,10 +28,7 @@ module.exports = model(
         required: true,
       },
       guildName: String,
-      status: {
-        type: String,
-        required: true,
-      },
+      status: [status]
     },
     {
       timestamps: true,
