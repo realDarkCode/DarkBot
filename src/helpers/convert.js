@@ -84,6 +84,8 @@ const getPresenceStatusEmoji = (status) => {
       return "🟡";
     case "offline":
       return "⚫";
+    case "dnd":
+      return "🔴"
     default:
       return status;
   }

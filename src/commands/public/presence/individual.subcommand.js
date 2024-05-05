@@ -26,17 +26,27 @@ module.exports = {
 
     presence = await presenceService.getAUserPresence(guildId, targetUser.id);
 
-    if (presence) {
+    const status = presence?.status || [];
+    status.reverse()
+
+    const recentStatus = status[0]
+
+    status.shift()
+
+    if (presence && recentStatus) {
       response
         .setDescription(
           [
             `**Name:** \`${presence.userName}\``,
-            `**Status:** ${getPresenceStatusEmoji(presence.status)} - ${
-              presence.status
-            }`,
-            `**lastUpdatedAt:** <t:${Math.round(
+            `**Status:** ${getPresenceStatusEmoji(presence.status[0].text)} ${presence.status[0].text
+            } - <t:${Math.round(
               new Date(presence.updatedAt).getTime() / 1000
             )}:R>`,
+            "", "",
+            `**Recent:**\n${status.map((s, i) => `\t\`${i + 1}.\` ${getPresenceStatusEmoji(s.text)} ${s.text
+              } - <t:${Math.round(
+                new Date(s.time).getTime() / 1000
+              )}:R>`).join("\n")}`
           ].join("\n")
         )
         .setThumbnail(targetUser.avatarURL());
