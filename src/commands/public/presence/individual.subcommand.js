@@ -38,7 +38,7 @@ module.exports = {
         .setDescription(
           [
             `**Name:** \`${presence.userName}\``,
-            `**Status:** ${getPresenceStatusEmoji(presence.status[0].text)} ${presence.status[0].text
+            `**Status:** ${getPresenceStatusEmoji(recentStatus.text)} ${recentStatus.text
             } - <t:${Math.round(
               new Date(presence.updatedAt).getTime() / 1000
             )}:R>`,
