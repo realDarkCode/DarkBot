@@ -35,8 +35,9 @@ const loadCommands = async (client) => {
   client.application.commands.set(commandArray);
 
   // log status
+  if (table.__rows.length && process.env.LOG) console.log(table.toString());
+
   if (table.__rows.length)
-    // console.log(table.toString(), `\n${commandArray.length} Commands Loaded`);
     console.log(`${commandArray.length} Commands Loaded`);
   else console.log("No commands found");
 };
