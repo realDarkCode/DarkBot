@@ -1,16 +1,40 @@
-const { glob } = require("glob");
-const { promisify } = require("util");
+const fs = require('fs');
+const path = require('path');
 
-const promisifyGlob = promisify(glob);
+function findJsFiles(dir, fileList = []) {
+  const files = fs.readdirSync(dir);
+
+  files.forEach(file => {
+    const filePath = path.join(dir, file);
+    const fileStat = fs.statSync(filePath);
+
+    if (fileStat.isDirectory()) {
+      findJsFiles(filePath, fileList);
+    } else if (file.endsWith('.js')) {
+      fileList.push(filePath);
+    }
+  });
+
+  return fileList;
+}
 
 async function loadFiles(directoryName) {
-  const files = await promisifyGlob(
-    `${process.cwd().replace(/\\/g, "/")}/src/${directoryName}/**/*.js`
-  );
-  // Removing previously cached files
-  files.forEach((file) => delete require.cache[require.resolve(file)]);
+  try {
+    const directoryPath = path.join(process.cwd(), "src", directoryName);
+    const files = findJsFiles(directoryPath);
 
-  return files;
+    files.forEach(file => {
+      try {
+        delete require.cache[require.resolve(file)];
+      } catch (error) {
+        console.error(`Error removing from cache: ${file}`, error);
+      }
+    });
+
+    return files;
+  } catch (error) {
+    console.error("Error loading files:", error);
+  }
 }
 
 module.exports = { loadFiles };

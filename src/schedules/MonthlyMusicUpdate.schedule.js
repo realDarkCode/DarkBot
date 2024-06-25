@@ -6,7 +6,7 @@ const {
 const { secondsToDuration } = require("../helpers/convert");
 
 module.exports = {
-  name: "favoriteMusic-schedule",
+  name: "monthlyMusicUpdate",
   frequency: "45 17  *  *  4",
 
   /**
@@ -36,18 +36,17 @@ module.exports = {
               user.songs.length === 0
                 ? "You haven't listened to any song yet."
                 : user.songs
-                    .map(
-                      (song, index) =>
-                        `${index + 1}.[\`${
-                          song.count
-                        } times\`]-${song.name.slice(
-                          0,
-                          30
-                        )}...\`${secondsToDuration(
-                          song.duration || 0
-                        )}\`-<t:${Math.round(song.updatedAt / 1000)}:R>`
-                    )
-                    .join("\n")
+                  .map(
+                    (song, index) =>
+                      `${index + 1}.[\`${song.count
+                      } times\`]-${song.name.slice(
+                        0,
+                        30
+                      )}...\`${secondsToDuration(
+                        song.duration || 0
+                      )}\`-<t:${Math.round(song.updatedAt / 1000)}:R>`
+                  )
+                  .join("\n")
             )
             .addFields(
               {
@@ -78,12 +77,11 @@ module.exports = {
             });
 
           u.send({
-            content: `Hello **${
-              u.displayName
-            }**, here is your \`${today.toLocaleDateString("default", {
-              month: "long",
-              year: "numeric",
-            })}\` music stats.\n\n[\`Note:\` You previous month music record will be deleted within 2 days. Enjoy you favorites now.]`,
+            content: `Hello **${u.displayName
+              }**, here is your \`${today.toLocaleDateString("default", {
+                month: "long",
+                year: "numeric",
+              })}\` music stats.\n\n[\`Note:\` You previous month music record will be deleted within 2 days. Enjoy you favorites now.]`,
             embeds: [responseEmbed],
           }).catch((er) => {
             console.info(

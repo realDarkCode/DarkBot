@@ -37,11 +37,16 @@ client.activityIntervalId = null;
 client.musicControllerMsgId = null;
 
 const { DisTube } = require("distube");
+
 const { SpotifyPlugin } = require("@distube/spotify");
-const { YtDlpPlugin } = require("@distube/yt-dlp");
+const { YouTubePlugin } = require("@distube/youtube");
+
 client.distube = new DisTube(client, {
-  emptyCooldown: 5 * 60,
-  plugins: [new SpotifyPlugin(), new YtDlpPlugin()],
+  emitAddListWhenCreatingQueue: true,
+  emitAddSongWhenCreatingQueue: true,
+
+  plugins: [new YouTubePlugin(),
+  new SpotifyPlugin()],
 });
 // Establish connection to Database
 const { connect, set: mongooseSet } = require("mongoose");

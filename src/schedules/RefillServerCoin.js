@@ -1,8 +1,8 @@
 const { Client, EmbedBuilder } = require("discord.js");
 const botConfig = require("../config/bot");
 module.exports = {
-  name: "notify-schedule",
-  frequency: "0 18 * * *",
+  name: "refillServerCoinReminder",
+  frequency: "0 19 * * *",
   /**
    * Notify Developer to claim coin for server to keep running.
    * @param {Client} client

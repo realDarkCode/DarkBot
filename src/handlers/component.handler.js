@@ -27,6 +27,8 @@ const loadComponents = async (client) => {
   });
 
   // log status
+  if (table.__rows.length && process.env.LOG) console.log(table.toString());
+
   if (table.__rows.length)
     console.log(`${components.length} Components Loaded`);
   else console.log("No components found");

@@ -34,6 +34,7 @@ const loadEvents = async (client) => {
     }
   });
 
+  if (table.__rows.length && process.env.LOG) console.log(table.toString());
   // log status
   if (table.__rows.length) console.log(`${events.length} Events Loaded`);
   else console.log("No events found");

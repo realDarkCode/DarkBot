@@ -1,13 +1,15 @@
 var CronJob = require("cron").CronJob;
 
+
+const ascii = require("ascii-table");
+const table = new ascii("Schedules").setHeading("SL", "schedule", "Status");
+
+
 module.exports = async (client) => {
-  let count = 0;
   const { loadFiles } = require("../functions/fileLoader");
 
-  const ascii = require("ascii-table");
-  const table = new ascii("Schedules").setHeading("SL", "schedule", "Status");
-
   const schedules = await loadFiles("schedules");
+
   await Promise.all(
     schedules.map(async (file, index) => {
       const schedule = require(file);
@@ -28,13 +30,14 @@ module.exports = async (client) => {
         schedule.options?.timeZone || "Asia/Dhaka"
       );
 
-      count++;
+
       table.addRow(index + 1, schedule.name, "🟢");
     })
+
   );
 
-  table.addRow("Total:", count);
+  // log status
+  if (table.__rows.length && process.env.LOG) console.log(table.toString());
+  if (table.__rows.length) console.log(`${schedules.length} schedules loaded`);
 
-  if (table.__rows.length) console.log(table.toString());
-  else console.log("No schedules found");
 };
