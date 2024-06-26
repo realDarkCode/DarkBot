@@ -80,13 +80,13 @@ const handleDistubeEvent = async (client) => {
         ],
       });
     })
-    .on("error", (channel, e) => {
-      channel.send({
+    .on("error", (e, queue, song) => {
+      queue.textChannel.send({
         embeds: [
           new EmbedBuilder()
             .setColor("Red")
             .setDescription(
-              `⛔ An error encountered: ${e.toString().slice(0, 1974)}`
+              `⛔ An error encountered while playing ${song.name}\n\n ${e.toString().slice(0, 1000)}`
             ),
         ],
       });
