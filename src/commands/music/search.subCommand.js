@@ -1,3 +1,4 @@
+const { YouTubePlugin } = require("@distube/youtube");
 const {
   ChatInputCommandInteraction,
   EmbedBuilder,
@@ -5,7 +6,9 @@ const {
   ActionRowBuilder,
   ButtonStyle,
 } = require("discord.js");
-const musicCountService = require("../../services/music/musicCount.service");
+
+const ytPlugin = new YouTubePlugin();
+
 
 const numEmoji = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
 module.exports = {
@@ -24,7 +27,7 @@ module.exports = {
     await interaction.deferReply();
     let searchResult;
     try {
-      searchResult = await client.distube.search(searchTerm, {
+      searchResult = await ytPlugin.search(searchTerm, {
         type,
         limit,
       });
@@ -36,17 +39,15 @@ module.exports = {
       .setTitle("Music Search Result")
       .setColor("Purple")
       .setDescription(
-        `${
-          searchResult.length == 0
-            ? "No result found with this query"
-            : searchResult
-                .map(
-                  (video, index) =>
-                    `${numEmoji[index]} ${video.name.slice(0, 50)} \`${
-                      video.formattedDuration || video.length
-                    }\` \`${video.type}\` `
-                )
-                .join("\n")
+        `${searchResult.length == 0
+          ? "No result found with this query"
+          : searchResult
+            .map(
+              (video, index) =>
+                `${numEmoji[index]} ${video.name.slice(0, 50)} \`${video.formattedDuration || video.length
+                }\` \`${video.type}\` `
+            )
+            .join("\n")
         }`
       );
     let r1 = new ActionRowBuilder(),
