@@ -40,13 +40,19 @@ const { DisTube } = require("distube");
 
 const { SpotifyPlugin } = require("@distube/spotify");
 const { YouTubePlugin } = require("@distube/youtube");
+const { DirectLinkPlugin } = require("@distube/direct-link")
+const { YtDlpPlugin } = require("@distube/yt-dlp")
 
 client.distube = new DisTube(client, {
-  emitAddListWhenCreatingQueue: true,
+  joinNewVoiceChannel: true,
   emitAddSongWhenCreatingQueue: true,
 
-  plugins: [new YouTubePlugin(),
-  new SpotifyPlugin()],
+  plugins: [
+    new YouTubePlugin(),
+    new SpotifyPlugin(),
+    new DirectLinkPlugin(),
+    new YtDlpPlugin({ update: true }),
+  ],
 });
 // Establish connection to Database
 const { connect, set: mongooseSet } = require("mongoose");
