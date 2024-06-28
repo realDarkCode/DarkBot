@@ -62,7 +62,7 @@ const handleDistubeEvent = async (client) => {
           new EmbedBuilder()
             .setColor("Green")
             .setDescription(
-              `🟢 Added ${song.name} - \`${song.formattedDuration}\` to the queue by ${song.user}`
+              [`🟢 Added ${song.name} - \`${song.formattedDuration}\` from \`${song.source}\` by ${song.user}`].join("\n")
             )
             .setThumbnail(song.thumbnail),
         ],
@@ -74,7 +74,7 @@ const handleDistubeEvent = async (client) => {
           new EmbedBuilder()
             .setColor("Green")
             .setDescription(
-              ` Added \`${playlist.name}\`🎶 playlist (${playlist.songs.length} songs) to queue`
+              `🟢 Added \`${playlist.name}\`🎶 playlist - \`${playlist.formattedDuration}\` (${playlist.songs.length} songs) from \`${playlist.source}\` by ${playlist.user}`
             )
             .setThumbnail(playlist.thumbnail),
         ],
