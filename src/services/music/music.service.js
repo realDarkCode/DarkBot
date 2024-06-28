@@ -135,12 +135,18 @@ const generateMusicStatusButtons = (queue) => {
 
 const generateMusicPlayerStatus = (queue, song, completed = false) => {
   const previousSongsLength = queue.previousSongs.reduce(
-    (store, curr) => store + curr.duration,
+    (store, curr) => {
+      const duration = curr.stream.playFromSource ? curr.duration : curr.stream.song.duration;
+
+      return store + duration;
+    },
     0
   );
+  const songDuration = song.stream.playFromSource ? song.duration : song.stream.song.duration;
+
   let queuePlayedLength = previousSongsLength + queue.currentTime;
-  if (completed) queuePlayedLength += song.duration;
-  const totalQueueLength = previousSongsLength + queue.duration;
+  if (completed) queuePlayedLength += songDuration;
+  const totalQueueLength = previousSongsLength + songDuration;
 
   return {
     embeds: [
@@ -149,44 +155,37 @@ const generateMusicPlayerStatus = (queue, song, completed = false) => {
         .setThumbnail(song.thumbnail)
         .setDescription(
           [
-            `**${completed ? "Played" : "Playing"}:** \`${song.name}\` - \`${
-              song.formattedDuration
+            `**${completed ? "Played" : "Playing"}:** \`${song.name}\` - \`${song.formattedDuration
             }\` `,
             `**Requested by: **${song.user} `,
-            `**Duration:** ${
-              completed
-                ? `\`${secondsToDuration(
-                    song.duration
-                  )}\`/\`${secondsToDuration(song.duration)}\``
-                : `\`${secondsToDuration(
-                    queue.currentTime
-                  )}\`/\`${secondsToDuration(song.duration)}\``
+            `**Duration:** ${completed
+              ? `\`${secondsToDuration(
+                songDuration
+              )}\`/\`${secondsToDuration(songDuration)}\``
+              : `\`${secondsToDuration(
+                queue.currentTime
+              )}\`/\`${secondsToDuration(songDuration)}\``
             }`,
-            `${
-              completed
-                ? `${generateProgressBar(song.duration, song.duration, 35)} `
-                : `${generateProgressBar(
-                    queue.currentTime,
-                    song.duration,
-                    35
-                  )} `
+            `${completed
+              ? `${generateProgressBar(songDuration, songDuration, 35)} `
+              : `${generateProgressBar(
+                queue.currentTime,
+                songDuration,
+                35
+              )} `
             }`,
             "",
-            `Status: \`${
-              completed ? `Completed` : queue.paused ? "Paused" : "Playing"
+            `Status: \`${completed ? `Completed` : queue.paused ? "Paused" : "Playing"
             }\` | Queue: \`${secondsToDuration(
               queuePlayedLength
-            )}\` / \`${secondsToDuration(totalQueueLength)}\` | Songs: \`${
-              queue.previousSongs.length + 1
+            )}\` / \`${secondsToDuration(totalQueueLength)}\` | Songs: \`${queue.previousSongs.length + 1
             }/${queue.songs.length + queue.previousSongs.length}\``,
-            `Volume: \`${queue.volume}%\` | Loop: \`${
-              queue.repeatMode
-                ? queue.repeatMode === 2
-                  ? "Queue"
-                  : "Song"
-                : "Off"
-            }\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\` | Shuffle: \`${
-              queue.shuffle ? "On" : "Off"
+            `Volume: \`${queue.volume}%\` | Loop: \`${queue.repeatMode
+              ? queue.repeatMode === 2
+                ? "Queue"
+                : "Song"
+              : "Off"
+            }\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\` | Shuffle: \`${queue.shuffle ? "On" : "Off"
             }\``,
           ].join("\n")
         )
