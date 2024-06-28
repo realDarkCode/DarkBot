@@ -52,7 +52,7 @@ module.exports = {
         ephemeral: true,
       });
     }
-    const subCommand = interaction.options.getSubcommand(false);
+    const subCommand = interaction.options.getSubcommandGroup() || interaction.options.getSubcommand(false);
     try {
       if (subCommand) {
         const subCommandFile = client.subCommands.get(

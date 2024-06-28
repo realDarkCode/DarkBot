@@ -91,7 +91,7 @@ const handleDistubeEvent = async (client) => {
         ],
       });
       console.error(e);
-      updateRuntimeStatus(channel.client);
+      // updateRuntimeStatus(channel.client);
     })
     .on("empty", (queue) => {
       queue.textChannel.send({

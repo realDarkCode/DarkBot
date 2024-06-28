@@ -49,6 +49,8 @@ const loadCommands = async (client) => {
   if (table.__rows.length)
     console.log(`${commandArray.length} Commands Loaded`);
   else console.log("No commands found");
+
+  return commandArray;
 };
 
 module.exports = loadCommands;
