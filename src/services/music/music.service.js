@@ -146,7 +146,8 @@ const generateMusicPlayerStatus = (queue, song, completed = false) => {
 
   let queuePlayedLength = previousSongsLength + queue.currentTime;
   if (completed) queuePlayedLength += songDuration;
-  const totalQueueLength = previousSongsLength + songDuration;
+  // const totalQueueLength = previousSongsLength + songDuration;
+  const totalQueueLength = queue.duration;
 
   return {
     embeds: [
