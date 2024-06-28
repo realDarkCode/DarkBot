@@ -1,4 +1,4 @@
-const { ChatInputCommandInteraction } = require("discord.js");
+const { ChatInputCommandInteraction, EmbedBuilder } = require("discord.js");
 const {
     isValidMusicInteraction,
 } = require("../../services/music/music.service");
@@ -22,21 +22,7 @@ module.exports = {
         const filterName = options.getString("filter");
 
         switch (subCommand) {
-            case "add": {
-                if (filters.values.includes(filterName)) {
-                    return await interaction.reply({
-                        content: "❌ Filter already added",
-                    });
-                }
-                const filter = defaultFilters.find(f => f.name === filterName)
-                await filters.add(filter);
 
-                return await interaction.reply({
-                    content: `Added \`${filter.name}\` filter to the queue`,
-                });
-
-                break;
-            }
             case "set": {
 
                 const filter = defaultFilters.find(f => f.name === filterName)
@@ -46,20 +32,7 @@ module.exports = {
                 });
                 break;
             }
-            case "remove": {
 
-                if (!filters.values.includes(filterName)) {
-                    return await interaction.reply({
-                        content: "❌ Filter not found",
-                    });
-                }
-                const filter = defaultFilters.find(f => f.name === filterName)
-                await filters.remove(filter);
-                return await interaction.reply({
-                    content: `Removed \`${filter.name}\` filter from the queue`,
-                });
-                break;
-            }
             case "clear": {
                 await filters.clear();
                 return await interaction.reply({
@@ -68,18 +41,16 @@ module.exports = {
                 break;
             }
             case "list": {
-                const list = filters.values.map(f => `\`${f.name}\``).join(", ");
-                return await interaction.reply({
-                    content: `List of active Filters: ${list}`,
-                });
-                break;
+                const response = new EmbedBuilder().setTitle("List of available filters").setColor("Green");
+
+                response.setDescription(defaultFilters.map(f => `\`${f.name}\` : \`${f.value}\``).join("\n"));
+                return await interaction.reply({ embeds: [response] });
+
+
             }
             default:
                 break;
         }
 
-
-        console.log(queue.filters.values)
-        await interaction.reply({ content: "🎼 Request Received" });
     },
 };

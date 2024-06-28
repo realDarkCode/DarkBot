@@ -180,13 +180,14 @@ const generateMusicPlayerStatus = (queue, song, completed = false) => {
               queuePlayedLength
             )}\` / \`${secondsToDuration(totalQueueLength)}\` | Songs: \`${queue.previousSongs.length + 1
             }/${queue.songs.length + queue.previousSongs.length}\``,
-            `Volume: \`${queue.volume}%\` | Loop: \`${queue.repeatMode
+            `Filter: \`${queue.filters.values[0]?.name || "off"}\` | Loop: \`${queue.repeatMode
               ? queue.repeatMode === 2
                 ? "Queue"
                 : "Song"
               : "Off"
             }\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\` | Shuffle: \`${queue.shuffle ? "On" : "Off"
             }\``,
+            `Volume: \`${queue.volume}%\` | Source: \`${song.stream.playFromSource ? "Youtube" : "Spotify"}\``,
           ].join("\n")
         )
         .setFooter({ text: `Channel: ${song.uploader.name}` })
