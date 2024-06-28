@@ -26,17 +26,11 @@ module.exports = {
             .addStringOption(option =>
               option.setName("filter").setDescription("Select the filter").setRequired(true).addChoices(convertToChoices(filterNames))
             ))
-        .addSubcommand(subCommand =>
-          subCommand.setName("add").setDescription("add another filter")
-            .addStringOption(option =>
-              option.setName("filter").setDescription("Select the filter").setRequired(true).addChoices(convertToChoices(filterNames))
-            ))
-        .addSubcommand(subCommand => subCommand.setName("clear").setDescription("remove all the active filters"))
-        .addSubcommand(subCommand => subCommand.setName("list").setDescription("list all the active filters"))
-        .addSubcommand(subCommand => subCommand.setName("remove").setDescription("remove a filter").addStringOption(option =>
-          option.setName("filter").setDescription("Select the filter").setRequired(true).addChoices(convertToChoices(filterNames))
 
-        )))
+        .addSubcommand(subCommand => subCommand.setName("clear").setDescription("remove all the  filters"))
+        .addSubcommand(subCommand => subCommand.setName("list").setDescription("See list of all the available filters"))
+
+    )
     .addSubcommand((subCommand) =>
       subCommand
         .setName("search")
