@@ -48,7 +48,8 @@ function timestampToRelativeTime(current, previous) {
 }
 
 const generateProgressBar = (length, totalLength, barLength = 20) => {
-  const progress = (length / totalLength) * barLength;
+  let progress = Math.floor((length / totalLength) * barLength);
+  progress = Math.min(progress, barLength);
   const progressBar = "█".repeat(progress) + "-".repeat(barLength - progress);
   return `[${progressBar}]`;
 };

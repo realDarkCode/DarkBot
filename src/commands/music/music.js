@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-
+const { convertToChoices } = require("../../helpers/convert");
+const { filterNames } = require("../../config/music");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("music")
@@ -17,6 +18,25 @@ module.exports = {
             .setRequired(true)
         )
     )
+    .addSubcommandGroup(subCommandGroup =>
+      subCommandGroup
+        .setName("filter").setDescription("manage filters for the music player")
+        .addSubcommand(subCommand =>
+          subCommand.setName("set").setDescription("set a filter")
+            .addStringOption(option =>
+              option.setName("filter").setDescription("Select the filter").setRequired(true).addChoices(convertToChoices(filterNames))
+            ))
+        .addSubcommand(subCommand =>
+          subCommand.setName("add").setDescription("add another filter")
+            .addStringOption(option =>
+              option.setName("filter").setDescription("Select the filter").setRequired(true).addChoices(convertToChoices(filterNames))
+            ))
+        .addSubcommand(subCommand => subCommand.setName("clear").setDescription("remove all the active filters"))
+        .addSubcommand(subCommand => subCommand.setName("list").setDescription("list all the active filters"))
+        .addSubcommand(subCommand => subCommand.setName("remove").setDescription("remove a filter").addStringOption(option =>
+          option.setName("filter").setDescription("Select the filter").setRequired(true).addChoices(convertToChoices(filterNames))
+
+        )))
     .addSubcommand((subCommand) =>
       subCommand
         .setName("search")
