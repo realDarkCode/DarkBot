@@ -5,6 +5,7 @@ const {
   Partials,
   Collection,
 } = require("discord.js");
+const fs = require("fs");
 // load guild config
 const { loadGuildConfig } = require("./functions/loadConfig");
 // Initialize the client
@@ -40,18 +41,20 @@ const { DisTube } = require("distube");
 
 const { SpotifyPlugin } = require("@distube/spotify");
 const { YouTubePlugin } = require("@distube/youtube");
-const { DirectLinkPlugin } = require("@distube/direct-link")
-const { YtDlpPlugin } = require("@distube/yt-dlp")
+const { DirectLinkPlugin } = require("@distube/direct-link");
+const { YtDlpPlugin } = require("@distube/yt-dlp");
+
+// Load cookies from the cookies.json file
+const youtubeCookies = JSON.parse(fs.readFileSync("cookies.json", "utf-8"));
 
 client.distube = new DisTube(client, {
   joinNewVoiceChannel: true,
   emitAddSongWhenCreatingQueue: true,
-
   plugins: [
-    new YouTubePlugin(),
+    new YouTubePlugin({ cookies: youtubeCookies }),
     new SpotifyPlugin(),
     new DirectLinkPlugin(),
-    new YtDlpPlugin({ update: true }),
+    new YtDlpPlugin({ update: true, cookies: youtubeCookies }),
   ],
 });
 // Establish connection to Database

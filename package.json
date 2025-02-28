@@ -15,19 +15,20 @@
     "@distube/spotify": "^2.0.2",
     "@distube/youtube": "^1.0.4",
     "@distube/yt-dlp": "^2.0.1",
-    "@distube/ytdl-core": "^4.15.9",
+    "@distube/ytdl-core": "^4.16.4",
     "ascii-table": "^0.0.9",
     "cron": "^3.1.7",
     "discord.js": "^14.15.3",
-    "distube": "^5.0.4",
-    "dotenv": "^16.4.5",
-    "libsodium-wrappers": "^0.7.11",
+    "distube": "^5.0.6",
+    "dotenv": "^16.4.7",
+    "ffmpeg-static": "^5.2.0",
+    "libsodium-wrappers": "^0.7.15",
     "moment": "^2.30.1",
     "mongoose": "^8.4.3",
     "ms": "^2.1.3",
     "opusscript": "^0.1.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.9"
   }
 }
