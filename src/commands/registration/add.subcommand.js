@@ -63,7 +63,6 @@ module.exports = {
 
     await interaction.reply({
       content: `Added \`${name}\` as a \`${type}\`.`,
-      ephemeral: true,
     });
   },
 };

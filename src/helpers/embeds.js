@@ -8,9 +8,9 @@ function createRegistrationEmbed(event) {
         event.participants.length
       }\` Participants and \`${
         event.reservists.length
-      }\` Reservists in total for \`${
+      }\` Reservists in total of \`${
         event.participants.length + event.reservists.length
-      }\` members this event.`
+      }\` for members this event.`
     )
     .setColor("#0099ff")
     .addFields(
@@ -33,7 +33,8 @@ function createRegistrationEmbed(event) {
         inline: true,
       }
     )
-    .setFooter({ text: "Click a button to register or cancel registrations." });
+    .setFooter({ text: "Click a button to register or cancel registrations." })
+    .setTimestamp();
 }
 
 module.exports = { createRegistrationEmbed };

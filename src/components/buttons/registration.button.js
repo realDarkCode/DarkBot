@@ -29,7 +29,7 @@ module.exports = {
     let updatedParticipants = event.participants;
     let updatedReservists = event.reservists;
 
-    const name = member.nickname || member.user.username;
+    const name = member.displayName || member.user.username;
 
     if (buttonInfo[0] === "participant") {
       if (!updatedParticipants.includes(name)) {
