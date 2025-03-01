@@ -48,7 +48,6 @@ module.exports = {
 
     await interaction.reply({
       content: `Removed \`${name}\` from the registration.`,
-      ephemeral: true,
     });
   },
 };

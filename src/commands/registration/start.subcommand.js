@@ -66,7 +66,6 @@ module.exports = {
 
     await interaction.reply({
       content: "Event registration started!",
-      ephemeral: true,
     });
   },
 };

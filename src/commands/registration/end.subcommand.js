@@ -39,7 +39,6 @@ module.exports = {
 
     await interaction.reply({
       content: "Registration has been closed!",
-      ephemeral: true,
     });
   },
 };
