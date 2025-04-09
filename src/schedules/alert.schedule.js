@@ -1,16 +1,15 @@
-const { Client, EmbedBuilder } = require("discord.js");
+const { Client } = require("discord.js");
 const AlertMessage = require("../schemas/alert.schema.js");
+
 module.exports = {
   name: "alert",
-  frequency: "0 */5 * * * *",
+  frequency: "10 */5 * * * *",
   /**
-   *
    * @param {Client} client
    */
   async task(client) {
     try {
-      const now = new Date();
-      const utcTime = now.toISOString().slice(11, 16); // Get "HH:MM" format
+      const nowUTC = new Date();
 
       const days = [
         "Sunday",
@@ -21,35 +20,66 @@ module.exports = {
         "Friday",
         "Saturday",
       ];
-      const today = days[now.getUTCDay()];
 
-      const messages = await AlertMessage.find({
-        schedule: { $elemMatch: { day: today, time: utcTime } },
+      const todayUTC = days[nowUTC.getUTCDay()];
+      const currentTimeUTC = nowUTC.toISOString().slice(11, 16); // "HH:mm"
+
+      const alerts = await AlertMessage.find({
+        "schedule.day": todayUTC,
       });
 
-      for (const msg of messages) {
-        // Ensure it's not sent in the last 5 minutes
-        if (
-          msg.lastSend &&
-          msg.lastSend > new Date(Date.now() - 5 * 60 * 1000)
-        ) {
-          continue; // Skip this message
+      for (const alert of alerts) {
+        let isUpdated = false;
+
+        // Filter out schedules we might remove later if non-repeating
+        let schedulesToRemove = [];
+
+        for (let sched of alert.schedule) {
+          if (sched.day !== todayUTC) continue;
+
+          const schedTime = sched.time.padStart(5, "0");
+
+          const scheduleDateTimeUTC = new Date(
+            `${nowUTC.toISOString().slice(0, 10)}T${schedTime}:00.000Z`
+          );
+
+          const graceWindowStart = new Date(nowUTC.getTime() - 5 * 60 * 1000);
+
+          const lastSend = sched.lastSend || new Date(0);
+
+          if (
+            lastSend < scheduleDateTimeUTC &&
+            scheduleDateTimeUTC >= graceWindowStart &&
+            scheduleDateTimeUTC <= nowUTC
+          ) {
+            const channel = await client.channels.fetch(alert.channelId);
+            if (channel) {
+              await channel.send(alert.message);
+
+              sched.lastSend = nowUTC;
+              isUpdated = true;
+
+              if (!sched.repeat) {
+                schedulesToRemove.push(sched._id); // queue for removal
+              }
+            }
+          }
         }
 
-        const channel = await client.channels.fetch(msg.channelId);
-        if (channel) {
-          await channel.send(msg.message);
-
-          // Update `lastSend` globally
-          await AlertMessage.updateOne(
-            { _id: msg._id },
-            { lastSend: new Date() }
+        // Remove non-repeating schedules that have been sent
+        if (schedulesToRemove.length > 0) {
+          alert.schedule = alert.schedule.filter(
+            (sched) => !schedulesToRemove.includes(sched._id)
           );
+          isUpdated = true;
+        }
+
+        if (isUpdated) {
+          await alert.save();
         }
       }
     } catch (error) {
-      console.log(error);
-      return;
+      console.error("Alert job error:", error);
     }
   },
 };

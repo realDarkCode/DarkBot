@@ -17,9 +17,12 @@ module.exports = {
       "announcement_channel"
     )?.id;
 
+    const clockChannelId = options.getChannel("clock_channel")?.id;
+
     const botConfig = {
       botLogChannelId,
       announcementChannelId,
+      clockChannelId,
     };
 
     // update bot log channel id to the database
@@ -45,6 +48,9 @@ module.exports = {
             announcementChannelId
               ? `<#${announcementChannelId}>`
               : "`Not specified`"
+          } `,
+          `- Clock Channel:  ${
+            clockChannelId ? `<#${clockChannelId}>` : "`Not specified`"
           } `,
         ].join("\n")
       );

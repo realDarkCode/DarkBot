@@ -21,13 +21,20 @@ module.exports = {
       return interaction.reply("No scheduled messages found for this channel.");
     }
 
-    let reply = "**Scheduled Messages:**\n";
-    alertMessages.forEach((msg, i) => {
-      reply += `**${i + 1}.** ID: \`${msg.shortId}\` -  Message: ${ msg.message} - Schedule: \`${msg.schedule
-        .map((s) => `${s.day} ${s.time} UTC`)
-        .join(", ")}\`\n`;
-    });
-
-    interaction.reply({ content: reply });
+    let reply = new EmbedBuilder()
+      .setTitle("Scheduled Messages")
+      .setDescription(
+        alertMessages
+          .map(
+            (msg, i) =>
+              `**${i + 1}.** ID: \`${msg.shortId}\` -  Message: ${
+                msg.message
+              } - Schedule: \`${msg.schedule
+                .map((s) => `${s.day} ${s.time} UTC`)
+                .join(", ")}\``
+          )
+          .join("\n")
+      );
+    return await interaction.reply({ embeds: [reply] });
   },
 };

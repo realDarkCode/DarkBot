@@ -47,23 +47,11 @@ module.exports = {
             .setDescription("select public announcement channel")
             .addChannelTypes(ChannelType.GuildText)
         )
-    )
-    .addSubcommand((option) =>
-      option
-        .setName("monitor")
-        .setDescription("Config Monitor settings")
         .addChannelOption((option) =>
           option
-            .setName("announce_channel")
-            .setDescription(
-              "set  bot default announce channel related to monitor"
-            )
+            .setName("clock_channel")
+            .setDescription("select channel for UTC clock system")
             .addChannelTypes(ChannelType.GuildText)
-        )
-        .addRoleOption((option) =>
-          option
-            .setName("admin_role")
-            .setDescription("set the role which can use monitor commands")
         )
     ),
 };
