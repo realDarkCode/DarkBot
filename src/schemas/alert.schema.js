@@ -1,6 +1,13 @@
 const { Schema, model } = require("mongoose");
 const shortid = require("shortid");
 
+const scheduleSchema = new Schema({
+  day: { type: String, required: true },
+  time: { type: String, required: true },
+  lastSend: { type: Date },
+  repeat: { type: Boolean, default: false }, // true = repeat every week, false = send once
+});
+
 const alertMessageSchema = new Schema(
   {
     shortId: {
@@ -13,7 +20,7 @@ const alertMessageSchema = new Schema(
     channelId: { type: String, required: true },
     userId: { type: String, required: true },
     message: { type: String, required: true },
-    schedule: [{ day: String, time: String }],
+    schedule: [scheduleSchema],
     lastSend: Date,
   },
   {

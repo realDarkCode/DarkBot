@@ -2,7 +2,7 @@ const { Client, EmbedBuilder } = require("discord.js");
 const notifyService = require("../services/tools/notify.service");
 module.exports = {
   name: "notify",
-  frequency: "15 */5 * * * *",
+  frequency: "0 */5 * * * *",
   /**
    *
    * @param {Client} client

@@ -13,8 +13,8 @@ module.exports = {
     const { options, guildId, user, channelId } = interaction;
 
     const messageInput = options.getString("message");
-    const mentions = options.getString("mentions") || "";
     const scheduleInput = options.getString("schedule");
+    const repeat = options.getString("repeat") === "true" ? true : false;
 
     let schedule;
     const validScheduleInput = isValidSchedule(scheduleInput);
@@ -30,7 +30,7 @@ module.exports = {
     try {
       schedule = scheduleInput.split(", ").map((entry) => {
         const [day, time] = entry.trim().split(" ");
-        return { day, time };
+        return { day, time, repeat };
       });
     } catch (error) {
       return await interaction.reply({
@@ -40,13 +40,11 @@ module.exports = {
       });
     }
 
-    const message = mentions ? `${mentions} ${messageInput}` : messageInput;
-
     const msg = await AlertMessage.create({
       guildId,
       channelId,
       userId: user.id,
-      message,
+      message: messageInput,
       schedule,
     });
 

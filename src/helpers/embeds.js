@@ -4,7 +4,7 @@ function createRegistrationEmbed(event) {
   return new EmbedBuilder()
     .setTitle(event.title)
     .setDescription(
-      `${event.description}\n\n \`${
+      `${event.description.replace(/\\n/g, "\n")}\n\n \`${
         event.participants.length
       }\` Participants and \`${
         event.reservists.length

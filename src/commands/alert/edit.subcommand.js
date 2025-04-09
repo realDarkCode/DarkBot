@@ -13,21 +13,10 @@ module.exports = {
     const id = interaction.options.getString("id");
     const newMessage = interaction.options.getString("message") || "";
     let newSchedule = interaction.options.getString("schedule") || "";
+    const newRepeat =
+      interaction.options.getString("repeat") === "true" ? true : false;
 
-    try {
-      schedule = newSchedule.split(", ").map((entry) => {
-        const [day, time] = entry.trim().split(" ");
-        return { day, time };
-      });
-    } catch (error) {
-      return await interaction.reply({
-        content:
-          "Invalid schedule format. Please use format like: `Wednesday 12:00, Friday 4:00`",
-        ephemeral: true,
-      });
-    }
-
-    if (!newMessage && !newSchedule)
+    if (!newMessage && !newSchedule && !newRepeat)
       return interaction.reply({
         content: "Please provide new message or schedule to update.",
         ephemeral: true,
@@ -41,7 +30,7 @@ module.exports = {
         ephemeral: true,
       });
 
-    if (newSchedule) {
+    if (newSchedule || newRepeat) {
       const isValid = isValidSchedule(newSchedule);
 
       if (!isValid)
@@ -52,10 +41,19 @@ module.exports = {
         });
 
       try {
-        schedule = newSchedule.split(", ").map((entry) => {
-          const [day, time] = entry.trim().split(" ");
-          return { day, time };
-        });
+        let schedule = [];
+
+        if (newRepeat) {
+          schedule = scheduledMessage.schedule.map((entry) => {
+            return { ...entry, repeat: newRepeat };
+          });
+        }
+        if (newSchedule) {
+          schedule = newSchedule.split(", ").map((entry) => {
+            const [day, time] = entry.trim().split(" ");
+            return { day, time, repeat: newRepeat };
+          });
+        }
 
         scheduledMessage.schedule = schedule;
       } catch (error) {
