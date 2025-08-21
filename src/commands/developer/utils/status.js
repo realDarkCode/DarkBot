@@ -80,7 +80,7 @@ module.exports = {
         },
         {
           name: "🛠 Discord.js Version",
-          value: require("discord.js/package.json").version,
+          value: require("discord.js").version,
           inline: true,
         },
         {

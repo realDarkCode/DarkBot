@@ -6,7 +6,7 @@ const loadSystems = async (client) => {
 
   const systems = await loadFiles("systems");
 
-  systems.forEach((systemFile, index) => {
+  systems?.forEach((systemFile, index) => {
     const system = require(systemFile);
     try {
       system(client);
@@ -28,9 +28,6 @@ const loadSystems = async (client) => {
   // log status
   if (table.__rows.length && process.env.LOG) console.log(table.toString());
   if (table.__rows.length) console.log(`${systems.length} systems loaded`);
-
 };
-
-
 
 module.exports = loadSystems;
