@@ -37,26 +37,7 @@ client.color = "#1975FC";
 client.activityIntervalId = null;
 client.musicControllerMsgId = null;
 
-const { DisTube } = require("distube");
 
-const { SpotifyPlugin } = require("@distube/spotify");
-const { YouTubePlugin } = require("@distube/youtube");
-const { DirectLinkPlugin } = require("@distube/direct-link");
-const { YtDlpPlugin } = require("@distube/yt-dlp");
-
-// Load cookies from the cookies.json file
-const youtubeCookies = JSON.parse(fs.readFileSync("cookies.json", "utf-8"));
-
-client.distube = new DisTube(client, {
-  joinNewVoiceChannel: true,
-  emitAddSongWhenCreatingQueue: true,
-  plugins: [
-    new YouTubePlugin({ cookies: youtubeCookies }),
-    new SpotifyPlugin(),
-    new DirectLinkPlugin(),
-    new YtDlpPlugin({ update: true, cookies: youtubeCookies }),
-  ],
-});
 // Establish connection to Database
 const { connect, set: mongooseSet } = require("mongoose");
 mongooseSet("strictQuery", false);
