@@ -14,7 +14,7 @@ module.exports = {
    */
   async execute(interaction) {
     const { client, user } = interaction;
-    const msg = await interaction.deferReply({ fetchReply: true });
+    const msg = await interaction.deferReply({ withResponse: true });
     const embed = new EmbedBuilder()
       .setColor(client.color)
       .setAuthor({ iconURL: user.avatarURL(), name: user.tag })

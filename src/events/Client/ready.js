@@ -8,7 +8,7 @@ const { Client, ActivityType } = require("discord.js");
 const { updateRuntimeStatus } = require("../../services/botPresence.discord");
 
 module.exports = {
-  name: "ready",
+  name: "clientReady",
   once: true,
   /**
    *

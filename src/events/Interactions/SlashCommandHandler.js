@@ -14,6 +14,94 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async execute(client, interaction) {
+    // Handle autocomplete interactions
+    if (interaction.isAutocomplete()) {
+      // Handle music command autocomplete specifically - only for play subcommand
+      if (interaction.commandName === "music") {
+        const subcommand = interaction.options.getSubcommand();
+        const focusedOption = interaction.options.getFocused(true);
+
+        // Only provide autocomplete for the 'play' subcommand
+        if (subcommand === "play" && focusedOption.name === "query") {
+          const query = focusedOption.value;
+
+          // Don't search if query is too short
+          if (query.length < 2) {
+            return interaction.respond([]);
+          }
+
+          // If it's a URL, just return it as is
+          if (query.startsWith("http")) {
+            return interaction.respond([
+              { name: "Use the provided URL", value: query },
+            ]);
+          }
+
+          try {
+            // Add timeout to prevent long searches
+            const searchPromise = client.player.search(query, {
+              searchEngine: "youtube", // Primary: YouTube
+              fallbackSearchEngine: "spotify", // Secondary: Spotify
+            });
+
+            // Timeout after 2 seconds to prevent blocking
+            const timeoutPromise = new Promise((_, reject) =>
+              setTimeout(() => reject(new Error("Search timeout")), 2000)
+            );
+
+            const searchResult = await Promise.race([
+              searchPromise,
+              timeoutPromise,
+            ]);
+
+            if (!searchResult || !searchResult.tracks.length) {
+              return interaction.respond([
+                { name: `No results found for "${query}"`, value: query },
+              ]);
+            }
+
+            // Format the results for Discord autocomplete (max 25 choices)
+            const choices = searchResult.tracks.slice(0, 10).map((track) => {
+              let name = `${track.title} - ${track.author}`;
+              let duration = track.duration ? ` (${track.duration})` : "";
+
+              // Truncate if too long (Discord limit is 100 characters)
+              let fullName = name + duration;
+              if (fullName.length > 100) {
+                name = name.substring(0, 95 - duration.length) + "...";
+                fullName = name + duration;
+              }
+
+              return {
+                name: fullName,
+                value: track.url || track.title,
+              };
+            });
+
+            return interaction.respond(choices);
+          } catch (error) {
+            console.error("🎵 Autocomplete search error:", error.message);
+            // Return the original query as fallback
+            return interaction.respond([
+              { name: `Search for "${query}"`, value: query },
+            ]);
+          }
+        }
+        return;
+      }
+
+      // Handle other command autocompetes
+      const command = client.commands.get(interaction.commandName);
+      if (!command || !command.autocomplete) return;
+
+      try {
+        await command.autocomplete(interaction);
+      } catch (error) {
+        console.error("Autocomplete error:", error);
+      }
+      return;
+    }
+
     const errorEmbed = new EmbedBuilder()
       .setColor("Red")
       .setAuthor({
@@ -52,7 +140,9 @@ module.exports = {
         ephemeral: true,
       });
     }
-    const subCommand = interaction.options.getSubcommandGroup() || interaction.options.getSubcommand(false);
+    const subCommand =
+      interaction.options.getSubcommandGroup() ||
+      interaction.options.getSubcommand(false);
     try {
       if (subCommand) {
         const subCommandFile = client.subCommands.get(
