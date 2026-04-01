@@ -15,7 +15,7 @@ const updateOne = ({ userId, userName, serviceName, isActive }) => {
     {
       upsert: true,
       new: true,
-    }
+    },
   );
 };
 
@@ -49,4 +49,5 @@ module.exports = {
   getUserSubscriptionList,
   searchOne,
   getSubscriptionByService,
+  find,
 };
